@@ -7,18 +7,21 @@
 /*************/
 import java_cup.runtime.*;
 
-
 public class Utils
 {
-    public static Symbol parseInteger(string yytext) throws Exception
+    private static final int INTEGER_UPPER_LIMIT = 2**15 - 1;
+
+    public static Symbol validateConsumeInteger(string yytext) throws Exception
     {
         // Test with long number
         // Test with -
         int parsedInteger = new Integer(yytext);
-        if (parsedInteger > 2**15 - 1)
+
+        if (parsedInteger > Utils.INTEGER_UPPER_LIMIT)
         {
             throw new Exception();
         }
+
         return symbol(TokenNames.NUMBER, parsedInteger));
     }
 }
@@ -93,7 +96,7 @@ Digit           = [0-9]
 Parentheses     = \( | \) | \{ | \} \[ | \]
 Operators       = \? | ! | \+ | \- | \* | /
 CommentContent  = {Letter} | {Digit} | {WhiteSpace} | {Parentheses} | {Operators} | \. | ;
-INTEGER			= 0 | [1-9][0-9]*                   (Limit 16 bit)
+INTEGER			= 0 | [1-9]{Digit}*                   (Limit 16 bit)
 ID				= {Letter}+[{Digit} | {Letter}]*
 STRING          = "{Letter}*"
 COMMENT_1       = //[{CommentContent}]*{LineTerminator}
@@ -124,7 +127,7 @@ KEYWORDS        =
 "/"					{ return symbol(TokenNames.DIVIDE);}
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
-{INTEGER}			{ Utils.parseInteger(yytext());}
+{INTEGER}			{ Utils.validateConsumeInteger(yytext());}
 {ID}				{ return symbol(TokenNames.ID,     new String( yytext()));}   
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
