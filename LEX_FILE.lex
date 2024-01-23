@@ -11,7 +11,7 @@ public class Utils
 {
     private static final int INTEGER_UPPER_LIMIT = 2**15 - 1;
 
-    public static Symbol validateConsumeInteger(string yytext) throws Exception
+    public static Symbol validateConsumeInteger(String yytext) throws Exception
     {
         // Test with long number
         // Test with -
