@@ -9,12 +9,12 @@ public class Main
 
 	public static String getFormattedToken(Symbol symbol, Lexer lexer)
 	{
-		switch (symbol.sym) {
-			case TokenNames.ID: return String.format("%s(%s)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
-			case TokenNames.INT: return String.format("%s(%d)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
-			case TokenNames.STRING: return String.format("%s(\"%s\")[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
-			default: return String.format("%s[%d,%d]\n", symbol.sym, lexer.getLine(), lexer.getTokenStartPosition());
-		}
+		return switch (symbol.sym) {
+			case TokenNames.ID -> String.format("%s(%s)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+			case TokenNames.INT -> String.format("%s(%d)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+			case TokenNames.STRING -> String.format("%s(\"%s\")[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+			default -> String.format("%s[%d,%d]\n", symbol.sym, lexer.getLine(), lexer.getTokenStartPosition());
+		};
 	}
 
 	public static void main(String argv[])
