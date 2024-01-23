@@ -22,7 +22,7 @@ public class Utils
             throw new Exception();
         }
 
-        return symbol(TokenNames.NUMBER, parsedInteger));
+        return symbol(TokenNames.INT, parsedInteger));
     }
 }
 
@@ -124,34 +124,34 @@ SKIP            = {WhiteSpace} | {LineTerminator} | {COMMENT_1} | {COMMENT_2}
 
 <YYINITIAL> {
 
-"PPP"				{ return symbol(TokenNames.TIMES);}
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
-"["                 { return symbol(TokenNames.RPAREN);}
-"]"                 { return symbol(TokenNames.RPAREN);}
-"{"                 { return symbol(TokenNames.RPAREN);}
-"}"                 { return symbol(TokenNames.RPAREN);}
-"nil"               { return symbol(TokenNames.RPAREN);}
+"["                 { return symbol(TokenNames.LBRACK);}
+"]"                 { return symbol(TokenNames.RBRACK);}
+"{"                 { return symbol(TokenNames.LBRACE);}
+"}"                 { return symbol(TokenNames.RBRACE);}
+"nil"               { return symbol(TokenNames.NIL);}
 "+"					{ return symbol(TokenNames.PLUS);}
 "-"					{ return symbol(TokenNames.MINUS);}
-"*"                 { return symbol(TokenNames.RPAREN);}
+"*"                 { return symbol(TokenNames.TIMES);}
 "/"					{ return symbol(TokenNames.DIVIDE);}
-","                 { return symbol(TokenNames.RPAREN);}
-"."                 { return symbol(TokenNames.RPAREN);}
-";"                 { return symbol(TokenNames.RPAREN);}
-"int"               { return symbol(TokenNames.RPAREN);}
-"void"              { return symbol(TokenNames.RPAREN);}
-":="                { return symbol(TokenNames.RPAREN);}
-"="                 { return symbol(TokenNames.RPAREN);}
-"<"                 { return symbol(TokenNames.RPAREN);}
-">"                 { return symbol(TokenNames.RPAREN);}
-"array"             { return symbol(TokenNames.RPAREN);}
-"class"             { return symbol(TokenNames.RPAREN);}
-"extends"           { return symbol(TokenNames.RPAREN);}
-"return"            { return symbol(TokenNames.RPAREN);}
-"while"             { return symbol(TokenNames.RPAREN);}
-"if"                { return symbol(TokenNames.RPAREN);}
-"new"               { return symbol(TokenNames.RPAREN);}
+","                 { return symbol(TokenNames.COMMA);}
+"."                 { return symbol(TokenNames.DOT);}
+";"                 { return symbol(TokenNames.SEMICOLON);}
+"int"               { return symbol(TokenNames.TYPE_INT);}
+"void"              { return symbol(TokenNames.TYPE_VOID);}
+":="                { return symbol(TokenNames.ASSIGN);}
+"="                 { return symbol(TokenNames.EQ);}
+"<"                 { return symbol(TokenNames.LT);}
+">"                 { return symbol(TokenNames.GT);}
+"array"             { return symbol(TokenNames.ARRAY);}
+"class"             { return symbol(TokenNames.CLASS);}
+"extends"           { return symbol(TokenNames.EXTENDS);}
+"return"            { return symbol(TokenNames.RETURN);}
+"while"             { return symbol(TokenNames.WHILE);}
+"if"                { return symbol(TokenNames.IF);}
+"new"               { return symbol(TokenNames.NEW);}
+"string"            { return symbol(TokenNames.TYPE_STRING);}
 {INT}		    	{ Utils.validateConsumeInteger(yytext());}
 {STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
 {ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
