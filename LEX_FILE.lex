@@ -7,6 +7,22 @@
 /*************/
 import java_cup.runtime.*;
 
+
+public class Utils
+{
+    public static Symbol parseInteger(string yytext) throws Exception
+    {
+        // Test with long number
+        // Test with -
+        int parsedInteger = new Integer(yytext);
+        if (parsedInteger > 2**15 - 1)
+        {
+            throw new Exception();
+        }
+        return symbol(TokenNames.NUMBER, parsedInteger));
+    }
+}
+
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
 /******************************/
@@ -71,9 +87,18 @@ import java_cup.runtime.*;
 /* MACRO DECALARATIONS */
 /***********************/
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= {LineTerminator} | [ \t]
-INTEGER			= 0 | [1-9][0-9]*
-ID				= [a-z]+
+WhiteSpace		= [ ] | [\t]
+Letter          = [a-zA-Z]
+Digit           = [0-9]
+Parentheses     = \( | \) | \{ | \} \[ | \]
+Operators       = \? | ! | \+ | \- | \* | /
+CommentContent  = {Letter} | {Digit} | {WhiteSpace} | {Parentheses} | {Operators} | \. | ;
+INTEGER			= 0 | [1-9][0-9]*                   (Limit 16 bit)
+ID				= {Letter}+[{Digit} | {Letter}]*
+STRING          = "{Letter}*"
+COMMENT_1       = //[{CommentContent}]*{LineTerminator}
+COMMENT_2       = /*[{CommentContent}]*/
+KEYWORDS        =
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -99,7 +124,7 @@ ID				= [a-z]+
 "/"					{ return symbol(TokenNames.DIVIDE);}
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
-{INTEGER}			{ return symbol(TokenNames.NUMBER, new Integer(yytext()));}
+{INTEGER}			{ Utils.parseInteger(yytext());}
 {ID}				{ return symbol(TokenNames.ID,     new String( yytext()));}   
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
