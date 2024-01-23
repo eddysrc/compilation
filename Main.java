@@ -6,41 +6,67 @@ import java_cup.runtime.Symbol;
    
 public class Main
 {
-	static public void main(String argv[])
+	private static final String ERROR_MESSAGE = "ERROR";
+
+	public static void appendToBuilder(StringBuilder fileContentBuilder, Symbol symbol) {
+
+		switch (symbol.type)
+		{
+			case TokenNames.ID:
+				fileContentBuilder.append(String.format("%s(%s)[%d,%d]\n"), symbol.type, symbol.value, symbol.getLine(), symbol.getTokenStartPosition());
+				break;
+			case TokenNames.INT:
+				fileContentBuilder.append(String.format("%s(%d)[%d,%d]\n"), symbol.type, symbol.value, symbol.getLine(), symbol.getTokenStartPosition());
+				break;
+			case TokenNames.STRING:
+				fileContentBuilder.append(String.format("%s(\"%s\")[%d,%d]\n"), symbol.type, symbol.value, symbol.getLine(), symbol.getTokenStartPosition());
+				break;
+			default:
+				fileContentBuilder.append(String.format("%s[%d,%d]\n", symbol.type, symbol.getLine(), symbol.getTokenStartPosition()));
+		}
+	}
+
+	public static void main(String argv[])
 	{
 		Lexer l;
-		Symbol s;
-		FileReader file_reader;
-		PrintWriter file_writer;
+		Symbol symbol;
+		FileReader fileReader;
+		PrintWriter fileWriter;
 		String inputFilename = argv[0];
 		String outputFilename = argv[1];
-		
-		try
-		{
+		StringBuilder fileContentBuilder = new StringBuilder();
+
+		try {
 			/********************************/
 			/* [1] Initialize a file reader */
 			/********************************/
-			file_reader = new FileReader(inputFilename);
+			fileReader = new FileReader(inputFilename);
 
 			/********************************/
 			/* [2] Initialize a file writer */
 			/********************************/
-			file_writer = new PrintWriter(outputFilename);
-			
+			fileWriter = new PrintWriter(outputFilename);
+		}
+		catch (FileNotFoundException e){
+			return;
+		}
+
+		try
+		{
 			/******************************/
 			/* [3] Initialize a new lexer */
 			/******************************/
-			l = new Lexer(file_reader);
+			l = new Lexer(fileReader);
 
 			/***********************/
 			/* [4] Read next token */
 			/***********************/
-			s = l.next_token();
+			symbol = l.next_token();
 
 			/********************************/
 			/* [5] Main reading tokens loop */
 			/********************************/
-			while (s.sym != TokenNames.EOF)
+			while (symbol.sym != TokenNames.EOF)
 			{
 				/************************/
 				/* [6] Print to console */
@@ -50,21 +76,17 @@ public class Main
 				System.out.print(",");
 				System.out.print(l.getTokenStartPosition());
 				System.out.print("]:");
-				System.out.print(s.value);
+				System.out.print(symbol.value);
 				System.out.print("\n");
 				
 				/*********************/
 				/* [7] Print to file */
 				/*********************/
-				file_writer.print(l.getLine());
-				file_writer.print(": ");
-				file_writer.print(s.value);
-				file_writer.print("\n");
-				
+				appendToBuilder(fileContentBuilder, symbol);
 				/***********************/
 				/* [8] Read next token */
 				/***********************/
-				s = l.next_token();
+				symbol = l.next_token();
 			}
 			
 			/******************************/
@@ -75,12 +97,16 @@ public class Main
 			/**************************/
 			/* [10] Close output file */
 			/**************************/
-			file_writer.close();
+			fileWriter.print(fileContentBuilder);
     	}
-			     
 		catch (Exception e)
 		{
+			fileWriter.print(ERROR_MESSAGE);
 			e.printStackTrace();
+		}
+		finally
+		{
+			fileWriter.close();
 		}
 	}
 }
