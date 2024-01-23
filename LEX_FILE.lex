@@ -95,13 +95,16 @@ Letter          = [a-zA-Z]
 Digit           = [0-9]
 Parentheses     = \( | \) | \{ | \} \[ | \]
 Operators       = \? | ! | \+ | \- | \* | /
-CommentContent  = {Letter} | {Digit} | {WhiteSpace} | {Parentheses} | {Operators} | \. | ;
-INTEGER			= 0 | [1-9]{Digit}*                   (Limit 16 bit)
+Comment1Content = {Letter} | {Digit} | {WhiteSpace} | {Parentheses} | {Operators} | \. | ;
+Comment2Content = {Comment1Content} | LineTerminator
+KEYWORDS        = class
+INT			    = 0 | [1-9]{Digit}*
 ID				= {Letter}+[{Digit} | {Letter}]*
 STRING          = "{Letter}*"
-COMMENT_1       = //[{CommentContent}]*{LineTerminator}
-COMMENT_2       = /*[{CommentContent}]*/
-KEYWORDS        =
+COMMENT_1       = //[{Comment1Content}]*{LineTerminator}
+COMMENT_2       = /*[{Comment2Content}]*/
+SKIP            = {WhiteSpace} | {LineTerminator} | {COMMENT_1} | {COMMENT_2}
+
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -121,14 +124,37 @@ KEYWORDS        =
 
 <YYINITIAL> {
 
-"+"					{ return symbol(TokenNames.PLUS);}
-"-"					{ return symbol(TokenNames.MINUS);}
 "PPP"				{ return symbol(TokenNames.TIMES);}
-"/"					{ return symbol(TokenNames.DIVIDE);}
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
-{INTEGER}			{ Utils.validateConsumeInteger(yytext());}
-{ID}				{ return symbol(TokenNames.ID,     new String( yytext()));}   
-{WhiteSpace}		{ /* just skip what was found, do nothing */ }
+"["                 { return symbol(TokenNames.RPAREN);}
+"]"                 { return symbol(TokenNames.RPAREN);}
+"{"                 { return symbol(TokenNames.RPAREN);}
+"}"                 { return symbol(TokenNames.RPAREN);}
+"nil"               { return symbol(TokenNames.RPAREN);}
+"+"					{ return symbol(TokenNames.PLUS);}
+"-"					{ return symbol(TokenNames.MINUS);}
+"*"                 { return symbol(TokenNames.RPAREN);}
+"/"					{ return symbol(TokenNames.DIVIDE);}
+","                 { return symbol(TokenNames.RPAREN);}
+"."                 { return symbol(TokenNames.RPAREN);}
+";"                 { return symbol(TokenNames.RPAREN);}
+"int"               { return symbol(TokenNames.RPAREN);}
+"void"              { return symbol(TokenNames.RPAREN);}
+":="                { return symbol(TokenNames.RPAREN);}
+"="                 { return symbol(TokenNames.RPAREN);}
+"<"                 { return symbol(TokenNames.RPAREN);}
+">"                 { return symbol(TokenNames.RPAREN);}
+"array"             { return symbol(TokenNames.RPAREN);}
+"class"             { return symbol(TokenNames.RPAREN);}
+"extends"           { return symbol(TokenNames.RPAREN);}
+"return"            { return symbol(TokenNames.RPAREN);}
+"while"             { return symbol(TokenNames.RPAREN);}
+"if"                { return symbol(TokenNames.RPAREN);}
+"new"               { return symbol(TokenNames.RPAREN);}
+{INT}		    	{ Utils.validateConsumeInteger(yytext());}
+{STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
+{ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
+{SKIP}		        { /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }
