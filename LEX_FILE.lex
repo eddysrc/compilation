@@ -91,7 +91,7 @@ import java_cup.runtime.*;
     {
         // Test with long number
         // Test with -
-        int parsedInteger = Integer.parseInt(yytext);
+        Integer parsedInteger = Integer.parseInt(yytext);
         if (parsedInteger > INTEGER_UPPER_LIMIT)
         {
             //throw new Exception();
@@ -114,7 +114,7 @@ Comment1Content = {Letter} | {Digit} | {WhiteSpace} | {Parentheses} | {Operators
 Comment2Content = {Comment1Content} | LineTerminator
 KEYWORDS        = class
 INT			    = 0 | [1-9]{Digit}*
-ID				= {Letter}+[{Digit} | {Letter}]*
+ID				= {Letter}+[{Digit}|{Letter}]*
 STRING          = "{Letter}*"
 COMMENT_1       = \/\/{Comment1Content}*{LineTerminator}
 COMMENT_2       = \/*{Comment2Content}*\/

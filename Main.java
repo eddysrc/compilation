@@ -7,13 +7,13 @@ public class Main
 {
 	private static final String ERROR_MESSAGE = "ERROR";
 
-	public static void appendToBuilder(StringBuilder fileContentBuilder, Symbol symbol, Lexer lexer)
+	public static String getFormattedToken(Symbol symbol, Lexer lexer)
 	{
 		switch (symbol.sym) {
-			case TokenNames.ID -> fileContentBuilder.append(String.format("%s(%s)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition()));
-			case TokenNames.INT -> fileContentBuilder.append(String.format("%s(%d)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition()));
-			case TokenNames.STRING -> fileContentBuilder.append(String.format("%s(\"%s\")[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition()));
-			default -> fileContentBuilder.append(String.format("%s[%d,%d]\n", symbol.sym, lexer.getLine(), lexer.getTokenStartPosition()));
+			case TokenNames.ID: return String.format("%s(%s)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+			case TokenNames.INT: return String.format("%s(%d)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+			case TokenNames.STRING: return String.format("%s(\"%s\")[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+			default: return String.format("%s[%d,%d]\n", symbol.sym, lexer.getLine(), lexer.getTokenStartPosition());
 		}
 	}
 
@@ -62,18 +62,14 @@ public class Main
 				/************************/
 				/* [6] Print to console */
 				/************************/
-				System.out.print("[");
-				System.out.print(lexer.getLine());
-				System.out.print(",");
-				System.out.print(lexer.getTokenStartPosition());
-				System.out.print("]:");
-				System.out.print(symbol.value);
-				System.out.print("\n");
+				String formattedToken = getFormattedToken(symbol, lexer);
+				System.out.print(formattedToken);
 				
 				/*********************/
 				/* [7] Print to file */
 				/*********************/
-				appendToBuilder(fileContentBuilder, symbol, lexer);
+				fileContentBuilder.append(formattedToken);
+
 				/***********************/
 				/* [8] Read next token */
 				/***********************/
