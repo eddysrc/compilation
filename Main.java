@@ -7,27 +7,19 @@ public class Main
 {
 	private static final String ERROR_MESSAGE = "ERROR";
 
-	public static void appendToBuilder(StringBuilder fileContentBuilder, Symbol symbol) {
-
-		switch (symbol.type)
-		{
-			case TokenNames.ID:
-				fileContentBuilder.append("%s(%s)[%d,%d]\n", symbol.type, symbol.value, symbol.getLine(), symbol.getTokenStartPosition());
-				break;
-			case TokenNames.INT:
-				fileContentBuilder.append("%s(%d)[%d,%d]\n", symbol.type, symbol.value, symbol.getLine(), symbol.getTokenStartPosition());
-				break;
-			case TokenNames.STRING:
-				fileContentBuilder.append("%s(\"%s\")[%d,%d]\n", symbol.type, symbol.value, symbol.getLine(), symbol.getTokenStartPosition());
-				break;
-			default:
-				fileContentBuilder.append("%s[%d,%d]\n", symbol.type, symbol.getLine(), symbol.getTokenStartPosition());
+	public static void appendToBuilder(StringBuilder fileContentBuilder, Symbol symbol, Lexer lexer)
+	{
+		switch (symbol.sym) {
+			case TokenNames.ID -> fileContentBuilder.append(String.format("%s(%s)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition()));
+			case TokenNames.INT -> fileContentBuilder.append(String.format("%s(%d)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition()));
+			case TokenNames.STRING -> fileContentBuilder.append(String.format("%s(\"%s\")[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition()));
+			default -> fileContentBuilder.append(String.format("%s[%d,%d]\n", symbol.sym, lexer.getLine(), lexer.getTokenStartPosition()));
 		}
 	}
 
 	public static void main(String argv[])
 	{
-		Lexer l;
+		Lexer lexer;
 		Symbol symbol;
 		FileReader fileReader;
 		PrintWriter fileWriter;
@@ -55,12 +47,12 @@ public class Main
 			/******************************/
 			/* [3] Initialize a new lexer */
 			/******************************/
-			l = new Lexer(fileReader);
+			lexer = new Lexer(fileReader);
 
 			/***********************/
 			/* [4] Read next token */
 			/***********************/
-			symbol = l.next_token();
+			symbol = lexer.next_token();
 
 			/********************************/
 			/* [5] Main reading tokens loop */
@@ -71,9 +63,9 @@ public class Main
 				/* [6] Print to console */
 				/************************/
 				System.out.print("[");
-				System.out.print(l.getLine());
+				System.out.print(lexer.getLine());
 				System.out.print(",");
-				System.out.print(l.getTokenStartPosition());
+				System.out.print(lexer.getTokenStartPosition());
 				System.out.print("]:");
 				System.out.print(symbol.value);
 				System.out.print("\n");
@@ -81,17 +73,17 @@ public class Main
 				/*********************/
 				/* [7] Print to file */
 				/*********************/
-				appendToBuilder(fileContentBuilder, symbol);
+				appendToBuilder(fileContentBuilder, symbol, lexer);
 				/***********************/
 				/* [8] Read next token */
 				/***********************/
-				symbol = l.next_token();
+				symbol = lexer.next_token();
 			}
 			
 			/******************************/
 			/* [9] Close lexer input file */
 			/******************************/
-			l.yyclose();
+			lexer.yyclose();
 
 			/**************************/
 			/* [10] Close output file */

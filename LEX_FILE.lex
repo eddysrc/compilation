@@ -7,9 +7,9 @@
 /*************/
 import java_cup.runtime.*;
 
-public class Utils
+/*class Utils
 {
-    private static final int INTEGER_UPPER_LIMIT = 2**15 - 1;
+    private static final int INTEGER_UPPER_LIMIT = 2^15 - 1;
 
     public static Symbol validateConsumeInteger(String yytext) throws Exception
     {
@@ -22,9 +22,9 @@ public class Utils
             throw new Exception();
         }
 
-        return symbol(TokenNames.INT, parsedInteger));
+        return symbol(TokenNames.INT, parsedInteger);
     }
-}
+}*/
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -83,7 +83,22 @@ public class Utils
 	/**********************************************/
 	/* Enable token position extraction from main */
 	/**********************************************/
-	public int getTokenStartPosition() { return yycolumn + 1; } 
+	public int getTokenStartPosition() { return yycolumn + 1; }
+
+	int INTEGER_UPPER_LIMIT = 2^15 - 1;
+
+    public Symbol validateConsumeInteger(String yytext)// throws Exception
+    {
+        // Test with long number
+        // Test with -
+        int parsedInteger = Integer.parseInt(yytext);
+        if (parsedInteger > INTEGER_UPPER_LIMIT)
+        {
+            //throw new Exception();
+        }
+
+        return symbol(TokenNames.INT, parsedInteger);
+    }
 %}
 
 /***********************/
@@ -152,7 +167,7 @@ SKIP            = {WhiteSpace} | {LineTerminator} | {COMMENT_1} | {COMMENT_2}
 "if"                { return symbol(TokenNames.IF);}
 "new"               { return symbol(TokenNames.NEW);}
 "string"            { return symbol(TokenNames.TYPE_STRING);}
-{INT}		    	{ Utils.validateConsumeInteger(yytext());}
+{INT}		    	{ validateConsumeInteger(yytext());}
 {STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
 {ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
 {SKIP}		        { /* just skip what was found, do nothing */ }
