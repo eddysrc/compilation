@@ -21,7 +21,7 @@ public class Main
 				fileContentBuilder.append("%s(\"%s\")[%d,%d]\n", symbol.type, symbol.value, symbol.getLine(), symbol.getTokenStartPosition());
 				break;
 			default:
-				fileContentBuilder.append(String.format("%s[%d,%d]\n", symbol.type, symbol.getLine(), symbol.getTokenStartPosition()));
+				fileContentBuilder.append("%s[%d,%d]\n", symbol.type, symbol.getLine(), symbol.getTokenStartPosition());
 		}
 	}
 
