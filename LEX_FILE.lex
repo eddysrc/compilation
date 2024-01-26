@@ -85,7 +85,7 @@ import java_cup.runtime.*;
 	/**********************************************/
 	public int getTokenStartPosition() { return yycolumn + 1; }
 
-	int INTEGER_UPPER_LIMIT = 2^15 - 1;
+	int INTEGER_UPPER_LIMIT = Math.pow(2,15) - 1;
 
     public Symbol validateConsumeInteger(String yytext)// throws Exception
     {
