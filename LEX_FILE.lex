@@ -24,6 +24,8 @@ import java_cup.runtime.*;
 
         return symbol(TokenNames.INT, parsedInteger);
     }
+
+    //{ validateConsumeInteger(yytext());}
 }*/
 
 /******************************/
@@ -85,19 +87,20 @@ import java_cup.runtime.*;
 	/**********************************************/
 	public int getTokenStartPosition() { return yycolumn + 1; }
 
-	int INTEGER_UPPER_LIMIT = Math.pow(2,15) - 1;
+	int INTEGER_UPPER_LIMIT = (int)Math.pow(2,15) - 1;
 
     public Symbol validateConsumeInteger(String yytext)// throws Exception
     {
         // Test with long number
         // Test with -
         Integer parsedInteger = Integer.parseInt(yytext);
+
         if (parsedInteger > INTEGER_UPPER_LIMIT)
         {
             //throw new Exception();
         }
 
-        return symbol(TokenNames.INT, parsedInteger);
+        return symbol(TokenNames.INT, new Integer("5")); //parsedInteger
     }
 %}
 
@@ -105,7 +108,7 @@ import java_cup.runtime.*;
 /* MACRO DECALARATIONS */
 /***********************/
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= [ ] | [\t]
+WhiteSpace		= [\s] | [\t]
 Letter          = [a-zA-Z]
 Digit           = [0-9]
 Parentheses     = \( | \) | \{ | \} \[ | \]
@@ -117,7 +120,7 @@ INT			    = 0 | [1-9]{Digit}*
 ID				= {Letter}+[{Digit}|{Letter}]*
 STRING          = "{Letter}*"
 COMMENT_1       = \/\/{Comment1Content}*{LineTerminator}
-COMMENT_2       = \/*{Comment2Content}*\/
+COMMENT_2       = \/\*{Comment2Content}\*\/
 SKIP            = {WhiteSpace} | {LineTerminator} | {COMMENT_1} | {COMMENT_2}
 
 
@@ -139,6 +142,7 @@ SKIP            = {WhiteSpace} | {LineTerminator} | {COMMENT_1} | {COMMENT_2}
 
 <YYINITIAL> {
 
+{SKIP}		        { /* just skip what was found, do nothing */ }
 "("					{ return symbol(TokenNames.LPAREN);}
 ")"					{ return symbol(TokenNames.RPAREN);}
 "["                 { return symbol(TokenNames.LBRACK);}
@@ -167,9 +171,20 @@ SKIP            = {WhiteSpace} | {LineTerminator} | {COMMENT_1} | {COMMENT_2}
 "if"                { return symbol(TokenNames.IF);}
 "new"               { return symbol(TokenNames.NEW);}
 "string"            { return symbol(TokenNames.TYPE_STRING);}
-{INT}		    	{ validateConsumeInteger(yytext());}
+{INT}		    	{
+                        // Test with long number
+                        // Test with -
+                        String rawInteger = yytext();
+                        Integer parsedInteger = Integer.parseInt(rawInteger);
+
+                        if (parsedInteger > INTEGER_UPPER_LIMIT)
+                        {
+                            //throw new Exception();
+                        }
+
+                        return symbol(TokenNames.INT, new Integer(rawInteger));
+                    }
 {STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
 {ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
-{SKIP}		        { /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }

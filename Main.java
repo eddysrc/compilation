@@ -1,5 +1,7 @@
 import java.io.*;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 
 import java_cup.runtime.Symbol;
    
@@ -7,24 +9,41 @@ public class Main
 {
 	private static final String ERROR_MESSAGE = "ERROR";
 
-	public static String getFormattedToken(Symbol symbol, Lexer lexer)
+	private static HashMap<Integer, String> getTokenValueToNameMapper()
 	{
-		String formattedToken;
+		HashMap<Integer, String> valueToNameMapper = new HashMap<>();
+		Class tokenNames = TokenNames.class;
+		for (Field f: tokenNames.getDeclaredFields())
+		{
+			try
+			{
+				valueToNameMapper.put((Integer) f.get(null), f.getName());
+			}
+			catch (Exception ignored){}
+		}
+
+		return valueToNameMapper;
+	}
+
+	public static String getFormattedToken(Symbol symbol, Lexer lexer, HashMap<Integer, String> tokenValueToNameMapper)
+	{
+		String format;
 		switch (symbol.sym) {
 			case TokenNames.ID:
-				formattedToken = String.format("%s(%s)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+				format = "%s(%s)[%d,%d]\n";
 				break;
 			case TokenNames.INT:
-				formattedToken = String.format("%s(%d)[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+				format = "%s(%d)[%d,%d]\n";
 				break;
 			case TokenNames.STRING:
-				formattedToken = String.format("%s(\"%s\")[%d,%d]\n", symbol.sym, symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
+				format = "%s(\"%s\")[%d,%d]\n";
 				break;
 			default:
-				formattedToken = String.format("%s[%d,%d]\n", symbol.sym, lexer.getLine(), lexer.getTokenStartPosition());
-		};
+				format = "%s[%d,%d]\n";
+				return String.format(format, tokenValueToNameMapper.get((Integer) symbol.sym), lexer.getLine(), lexer.getTokenStartPosition());
+		}
 
-		return formattedToken;
+		return String.format(format, tokenValueToNameMapper.get((Integer) symbol.sym), symbol.value, lexer.getLine(), lexer.getTokenStartPosition());
 	}
 
 	public static void main(String argv[])
@@ -36,6 +55,7 @@ public class Main
 		String inputFilename = argv[0];
 		String outputFilename = argv[1];
 		StringBuilder fileContentBuilder = new StringBuilder();
+		HashMap<Integer, String> valueToNameMapper = getTokenValueToNameMapper();
 
 		try {
 			/********************************/
@@ -72,7 +92,7 @@ public class Main
 				/************************/
 				/* [6] Print to console */
 				/************************/
-				String formattedToken = getFormattedToken(symbol, lexer);
+				String formattedToken = getFormattedToken(symbol, lexer, valueToNameMapper);
 				System.out.print(formattedToken);
 				
 				/*********************/
