@@ -50,6 +50,8 @@ import java_cup.runtime.*;
 /* scanner actions.                                                          */  
 /*****************************************************************************/   
 %{
+    private static final int INTEGER_UPPER_LIMIT = 2^15 - 1;
+
 	/*********************************************************************************/
 	/* Create a new java_cup.runtime.Symbol with information about the current token */
 	/*********************************************************************************/
