@@ -108,20 +108,20 @@ import java_cup.runtime.*;
 /* MACRO DECALARATIONS */
 /***********************/
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= [\s] | [\t]
+WhiteSpace		= \s|\t
 Letter          = [a-zA-Z]
 Digit           = [0-9]
-Parentheses     = \( | \) | \{ | \} \[ | \]
-Operators       = \? | \! | \+ | \- | \* | \/
-Comment1Content = {Letter} | {Digit} | {WhiteSpace} | {Parentheses} | {Operators} | \. | ;
-Comment2Content = {Comment1Content} | LineTerminator
+Parentheses     = \(|\)|\{|\}\[|\]
+Operators       = \?|\!|\+|\-|\*|\/
+Comment1Content = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}|{Operators}|\.;
+Comment2Content = {Comment1Content}|LineTerminator
 KEYWORDS        = class
-INT			    = 0 | [1-9]{Digit}*
+INT			    = 0|[1-9]{Digit}*
 ID				= {Letter}+[{Digit}|{Letter}]*
 STRING          = "{Letter}*"
 COMMENT_1       = \/\/{Comment1Content}*{LineTerminator}
 COMMENT_2       = \/\*{Comment2Content}\*\/
-SKIP            = {WhiteSpace} | {LineTerminator} | {COMMENT_1} | {COMMENT_2}
+SKIP            = {WhiteSpace}|{LineTerminator}|{COMMENT_1}|{COMMENT_2}
 
 
 /******************************/
