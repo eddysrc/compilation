@@ -7,27 +7,6 @@
 /*************/
 import java_cup.runtime.*;
 
-/*class Utils
-{
-    private static final int INTEGER_UPPER_LIMIT = 2^15 - 1;
-
-    public static Symbol validateConsumeInteger(String yytext) throws Exception
-    {
-        // Test with long number
-        // Test with -
-        int parsedInteger = new Integer(yytext);
-
-        if (parsedInteger > Utils.INTEGER_UPPER_LIMIT)
-        {
-            throw new Exception();
-        }
-
-        return symbol(TokenNames.INT, parsedInteger);
-    }
-
-    //{ validateConsumeInteger(yytext());}
-}*/
-
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
 /******************************/
@@ -86,41 +65,25 @@ import java_cup.runtime.*;
 	/* Enable token position extraction from main */
 	/**********************************************/
 	public int getTokenStartPosition() { return yycolumn + 1; }
-
-	int INTEGER_UPPER_LIMIT = (int)Math.pow(2,15) - 1;
-
-    public Symbol validateConsumeInteger(String yytext)// throws Exception
-    {
-        // Test with long number
-        // Test with -
-        Integer parsedInteger = Integer.parseInt(yytext);
-
-        if (parsedInteger > INTEGER_UPPER_LIMIT)
-        {
-            //throw new Exception();
-        }
-
-        return symbol(TokenNames.INT, new Integer("5")); //parsedInteger
-    }
 %}
 
 /***********************/
 /* MACRO DECALARATIONS */
 /***********************/
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= \s|\t
+WhiteSpace		= [ ]|\t
 Letter          = [a-zA-Z]
 Digit           = [0-9]
 Parentheses     = \(|\)|\{|\}\[|\]
 Operators       = \?|\!|\+|\-|\*|\/
 Comment1Content = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}|{Operators}|\.;
-Comment2Content = {Comment1Content}|LineTerminator
+Comment2Content = {Comment1Content}|{LineTerminator}
 KEYWORDS        = class
 INT			    = 0|[1-9]{Digit}*
 ID				= {Letter}+[{Digit}|{Letter}]*
-STRING          = "{Letter}*"
+STRING          = \"{Letter}*\"
 COMMENT_1       = \/\/{Comment1Content}*{LineTerminator}
-COMMENT_2       = \/\*{Comment2Content}\*\/
+COMMENT_2       = \/\*{Comment2Content}*\*\/
 SKIP            = {WhiteSpace}|{LineTerminator}|{COMMENT_1}|{COMMENT_2}
 
 

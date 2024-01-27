@@ -30,13 +30,11 @@ public class Main
 		String format;
 		switch (symbol.sym) {
 			case TokenNames.ID:
+			case TokenNames.STRING:
 				format = "%s(%s)[%d,%d]\n";
 				break;
 			case TokenNames.INT:
 				format = "%s(%d)[%d,%d]\n";
-				break;
-			case TokenNames.STRING:
-				format = "%s(\"%s\")[%d,%d]\n";
 				break;
 			default:
 				format = "%s[%d,%d]\n";
