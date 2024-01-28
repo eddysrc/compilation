@@ -50,7 +50,7 @@ import java_cup.runtime.*;
 /* scanner actions.                                                          */  
 /*****************************************************************************/   
 %{
-    private static final int INTEGER_UPPER_LIMIT = 2^15 - 1;
+    private static final int INTEGER_UPPER_LIMIT = (int) Math.pow(2,15) - 1;
 
 	/*********************************************************************************/
 	/* Create a new java_cup.runtime.Symbol with information about the current token */
@@ -137,17 +137,13 @@ SKIP            = {WhiteSpace}|{LineTerminator}|{COMMENT_1}|{COMMENT_2}
 "new"               { return symbol(TokenNames.NEW);}
 "string"            { return symbol(TokenNames.TYPE_STRING);}
 {INT}		    	{
-                        // Test with long number
-                        // Test with -
-                        String rawInteger = yytext();
-                        Integer parsedInteger = Integer.parseInt(rawInteger);
-
+                        Integer parsedInteger = Integer.parseInt(yytext());
                         if (parsedInteger > INTEGER_UPPER_LIMIT)
                         {
-                            //throw new Exception();
+                            throw new NumberFormatException();
                         }
 
-                        return symbol(TokenNames.INT, new Integer(rawInteger));
+                        return symbol(TokenNames.INT, parsedInteger);
                     }
 {STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
 {ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
