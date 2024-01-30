@@ -76,9 +76,9 @@ LineTerminator	= \r|\n|\r\n
 WhiteSpace		= [ ]|\t
 Letter          = [a-zA-Z]
 Digit           = [0-9]
-Parentheses     = \(|\)|\{|\}\[|\]
-Operators       = \?|\!|\+|\-|\*|\/
-Comment1Content = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}|{Operators}|\.
+Parentheses     = \(|\)|\{|\}|\[|\]
+Operators       = \?|\!|\+|\-|\*|\/|\.|\;
+Comment1Content = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}|{Operators}
 Comment2Content = {Comment1Content}|{LineTerminator}
 KEYWORDS        = class
 INT			    = 0|[1-9]{Digit}*
@@ -87,6 +87,7 @@ STRING          = \"{Letter}*\"
 COMMENT_1       = \/\/{Comment1Content}*{LineTerminator}
 COMMENT_2       = \/\*{Comment2Content}*\*\/
 SKIP            = {WhiteSpace}|{LineTerminator}|{COMMENT_1}|{COMMENT_2}
+ZERO_LEAD_INT   = 0[0-9]+
 
 
 /******************************/
@@ -146,6 +147,7 @@ SKIP            = {WhiteSpace}|{LineTerminator}|{COMMENT_1}|{COMMENT_2}
                         return symbol(TokenNames.INT, parsedInteger);
                     }
 {STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
+{ZERO_LEAD_INT}     { throw new NumberFormatException();}
 {ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 }

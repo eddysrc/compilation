@@ -1,6 +1,7 @@
 import java.io.*;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.sql.SQLOutput;
 import java.util.HashMap;
 
 import java_cup.runtime.Symbol;
@@ -91,7 +92,7 @@ public class Main
 				/* [6] Print to console */
 				/************************/
 				String formattedToken = getFormattedToken(symbol, lexer, valueToNameMapper);
-				System.out.print(formattedToken);
+				//System.out.print(formattedToken);
 				
 				/*********************/
 				/* [7] Print to file */
@@ -114,10 +115,10 @@ public class Main
 			/**************************/
 			fileWriter.print(fileContentBuilder);
     	}
-		catch (Exception e)
+		catch (Exception | Error e)
 		{
 			fileWriter.print(ERROR_MESSAGE);
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		finally
 		{
