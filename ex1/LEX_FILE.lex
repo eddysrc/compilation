@@ -73,7 +73,7 @@ import java_cup.runtime.*;
 /* MACRO DECALARATIONS */
 /***********************/
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= [ ]|\t
+WhiteSpace	    = [ ]|\t
 Letter          = [a-zA-Z]
 Digit           = [0-9]
 Parentheses     = \(|\)|\{|\}|\[|\]
@@ -82,8 +82,8 @@ OpComment2      = \?|\!|\+|\-|\.|\;
 CommonContent   = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}
 Comment1Content = {CommonContent}|{Operators}
 Comment2Content = {CommonContent}|{OpComment2}
-INT			    = 0|[1-9]{Digit}*
-ID				= {Letter}+[{Digit}|{Letter}]*
+INT	            = 0|[1-9]{Digit}*
+ID              = {Letter}+[{Digit}|{Letter}]*
 STRING          = \"{Letter}*\"
 COMMENT_1       = \/\/{Comment1Content}*{LineTerminator}
 COMMENT_2       = \/\*(({Comment2Content}|\/)*|\**{Comment2Content}+|{LineTerminator})*\**\/
@@ -109,18 +109,18 @@ ZERO_LEAD_INT   = 0[0-9]+
 
 <YYINITIAL> {
 
-{SKIP}		        { /* just skip what was found, do nothing */ }
-"("					{ return symbol(TokenNames.LPAREN);}
-")"					{ return symbol(TokenNames.RPAREN);}
+{SKIP}              { /* just skip what was found, do nothing */ }
+"("	                { return symbol(TokenNames.LPAREN);}
+")"	                { return symbol(TokenNames.RPAREN);}
 "["                 { return symbol(TokenNames.LBRACK);}
 "]"                 { return symbol(TokenNames.RBRACK);}
 "{"                 { return symbol(TokenNames.LBRACE);}
 "}"                 { return symbol(TokenNames.RBRACE);}
 "nil"               { return symbol(TokenNames.NIL);}
-"+"					{ return symbol(TokenNames.PLUS);}
-"-"					{ return symbol(TokenNames.MINUS);}
+"+"	                { return symbol(TokenNames.PLUS);}
+"-"	                { return symbol(TokenNames.MINUS);}
 "*"                 { return symbol(TokenNames.TIMES);}
-"/"					{ return symbol(TokenNames.DIVIDE);}
+"/"	                { return symbol(TokenNames.DIVIDE);}
 ","                 { return symbol(TokenNames.COMMA);}
 "."                 { return symbol(TokenNames.DOT);}
 ";"                 { return symbol(TokenNames.SEMICOLON);}
@@ -148,6 +148,6 @@ ZERO_LEAD_INT   = 0[0-9]+
                     }
 {STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
 {ZERO_LEAD_INT}     { throw new NumberFormatException();}
-{ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
-<<EOF>>				{ return symbol(TokenNames.EOF);}
+{ID}                { return symbol(TokenNames.ID, new String( yytext()));}
+<<EOF>>	            { return symbol(TokenNames.EOF);}
 }
