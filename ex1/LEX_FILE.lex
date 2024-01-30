@@ -82,7 +82,6 @@ OpComment2      = \?|\!|\+|\-|\.|\;
 CommonContent   = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}
 Comment1Content = {CommonContent}|{Operators}
 Comment2Content = {CommonContent}|{OpComment2}
-KEYWORDS        = class
 INT			    = 0|[1-9]{Digit}*
 ID				= {Letter}+[{Digit}|{Letter}]*
 STRING          = \"{Letter}*\"
