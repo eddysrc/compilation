@@ -78,14 +78,16 @@ Letter          = [a-zA-Z]
 Digit           = [0-9]
 Parentheses     = \(|\)|\{|\}|\[|\]
 Operators       = \?|\!|\+|\-|\*|\/|\.|\;
-Comment1Content = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}|{Operators}
-Comment2Content = {Comment1Content}|{LineTerminator}
+OpComment2      = \?|\!|\+|\-|\.|\;
+CommonContent   = {Letter}|{Digit}|{WhiteSpace}|{Parentheses}
+Comment1Content = {CommonContent}|{Operators}
+Comment2Content = {CommonContent}|{OpComment2}
 KEYWORDS        = class
 INT			    = 0|[1-9]{Digit}*
 ID				= {Letter}+[{Digit}|{Letter}]*
 STRING          = \"{Letter}*\"
 COMMENT_1       = \/\/{Comment1Content}*{LineTerminator}
-COMMENT_2       = \/\*{Comment2Content}*\*\/
+COMMENT_2       = \/\*(({Comment2Content}|\/)*|\**{Comment2Content}+|{LineTerminator})*\**\/
 SKIP            = {WhiteSpace}|{LineTerminator}|{COMMENT_1}|{COMMENT_2}
 ZERO_LEAD_INT   = 0[0-9]+
 
@@ -143,7 +145,6 @@ ZERO_LEAD_INT   = 0[0-9]+
                         {
                             throw new NumberFormatException();
                         }
-
                         return symbol(TokenNames.INT, parsedInteger);
                     }
 {STRING}            { return symbol(TokenNames.STRING, new String( yytext()));}
