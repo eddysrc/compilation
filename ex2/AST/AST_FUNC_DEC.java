@@ -7,13 +7,13 @@ public class AST_FUNC_DEC extends AST_DEC_ABSTRACT
 	/***************/
 	public String name;
 	public AST_TYPE type;
-	public AST_ARGS_LIST args;
+	public AST_ARGUMENTS args;
 	public AST_STMT_LIST content;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_FUNC_DEC(String name, AST_TYPE type, AST_ARGS_LIST args, AST_STMT_LIST content)
+	public AST_FUNC_DEC(String name, AST_TYPE type, AST_ARGUMENTS args, AST_STMT_LIST content)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

@@ -5,12 +5,12 @@ public class AST_C_FIELD_VAR extends AST_C_FIELD
 	/***************/
 	/*  varDec */
 	/***************/
-	public AST_DEC_VAR vd;
+	public AST_VAR_DEC vd;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_C_FIELD_VAR(AST_DEC_VAR vd)
+	public AST_C_FIELD_VAR(AST_VAR_DEC vd)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

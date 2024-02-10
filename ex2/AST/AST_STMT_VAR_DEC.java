@@ -5,12 +5,12 @@ public class AST_STMT_VAR_DEC extends AST_STMT
 	/***************/
 	/*  varDec */
 	/***************/
-	public AST_DEC_VAR vd;
+	public AST_VAR_DEC vd;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_VAR_DEC(AST_DEC_VAR vd)
+	public AST_STMT_VAR_DEC(AST_VAR_DEC vd)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

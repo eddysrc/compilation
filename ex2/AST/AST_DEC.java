@@ -5,15 +5,15 @@ public class AST_DEC extends AST_Node
 	/***************/
 	/*  type ID [= exp]; */
 	/***************/
-	public AST_DEC_VAR varDec;
-	public AST_DEC_FUNC funcDec;
-	public AST_DEC_CLASS classDec;
-	public AST_DEC_ARRAY arrDec;
+	public AST_VAR_DEC varDec;
+	public AST_FUNC_DEC funcDec;
+	public AST_CLASS_DEC classDec;
+	public AST_ARRAY_TYPE_DEF arrDec;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC(AST_DEC_VAR varDec)
+	public AST_DEC(AST_VAR_DEC varDec)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -30,7 +30,7 @@ public class AST_DEC extends AST_Node
 		/*******************************/
 		this.varDec = varDec;
 	}
-	public AST_DEC(AST_DEC_ARRAY arrDec)
+	public AST_DEC(AST_ARRAY_TYPE_DEF arrDec)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -47,7 +47,7 @@ public class AST_DEC extends AST_Node
 		/*******************************/
 		this.arrDec = arrDec;
 	}
-	public AST_DEC(AST_DEC_CLASS classDec)
+	public AST_DEC(AST_CLASS_DEC classDec)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -64,7 +64,7 @@ public class AST_DEC extends AST_Node
 		/*******************************/
 		this.classDec = classDec;
 	}
-	public AST_DEC(AST_DEC_FUNC funcDec)
+	public AST_DEC(AST_FUNC_DEC funcDec)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

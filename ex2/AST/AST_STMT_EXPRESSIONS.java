@@ -7,12 +7,12 @@ public class AST_STMT_EXPRESSIONS extends AST_STMT
 	/***************/
 	public AST_VAR var;
 	public String id;
-	public AST_EXP_LIST expList;
+	public AST_EXPRESSIONS expList;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_EXPRESSIONS(AST_VAR var, String id, AST_EXP_LIST expList)
+	public AST_STMT_EXPRESSIONS(AST_VAR var, String id, AST_EXPRESSIONS expList)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

@@ -7,12 +7,12 @@ public class AST_EXP_TEMPLATE extends AST_EXP
 	/***************/
 	public AST_VAR var;
 	public String fieldName;
-	public AST_EXP_LIST expList;
+	public AST_EXPRESSIONS expList;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_EXP_TEMPLATE(AST_VAR var, String fieldName, AST_EXP_LIST expList)
+	public AST_EXP_TEMPLATE(AST_VAR var, String fieldName, AST_EXPRESSIONS expList)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

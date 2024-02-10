@@ -34,33 +34,37 @@ parser code
 /************************/
 scan with
 {:
-	Symbol s;
+	Symbol s = null;
 	try
-	    {
-	    s = lexer.next_token();
-	    }
+    {
+        s = lexer.next_token();
+        //System.out.print(s.sym);
+        System.out.print("[");
+        System.out.print(lexer.getLine());
+        System.out.print(":");
+        System.out.print(lexer.getCharPos());
+        System.out.print("] ");
+        //System.out.print(TokenNames.terminalNames[s.sym]);
+        if (s.value != null)
+        {
+            System.out.print("( ");
+            System.out.print(s.value);
+            System.out.print(" )");
+        }
+        System.out.print("\n");
+        return s;
+    }
 	catch (Exception | Error e)
-    		{
-    			fileWriter.print(ERROR_MESSAGE);
-    			fileWriter.close();
-    			e.printStackTrace();
-    			System.exit(0);
-    		}
-	//System.out.print(s.sym);
-	System.out.print("[");
-	System.out.print(lexer.getLine());
-	System.out.print(":");
-	System.out.print(lexer.getCharPos());
-	System.out.print("] ");
-	System.out.print(TokenNames.terminalNames[s.sym]);
-	if (s.value != null)
-	{
-		System.out.print("( ");
-		System.out.print(s.value);
-		System.out.print(" )");
-	}
-	System.out.print("\n");
-	return s; 
+    {
+        fileWriter.print(ERROR_MESSAGE);
+        fileWriter.close();
+        e.printStackTrace();
+        System.exit(0);
+    }
+    finally
+    {
+        return s;
+    }
 :};
 
 /*************/
@@ -144,8 +148,12 @@ start with Program;
 /********************/
 /* DERIVATION RULES */
 /********************/
-Program     ::=     dec:d   decList:l                {: RESULT = new AST_DEC_LIST(d,l);            :}
-                    | dec:d                         {: RESULT = new AST_DEC_LIST(d,null);          :}
+
+Program ::=         decList:dl                       {: RESULT = new AST_PROGRAM(dl);:}
+                    ;
+
+decList     ::=     dec:d   decList:l                {: RESULT = new AST_DEC_LIST(d,l);            :}
+                    | dec:d                          {: RESULT = new AST_DEC_LIST(d,null);          :}
                     ;
 
 dec			::=		varDec:v								{: RESULT = new AST_DEC(v); :}
@@ -170,17 +178,17 @@ stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
 
 arrayTypedef    ::= ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON {: RESULT = new AST_ARRAY_TYPE_DEF(i,t); :};
 
-varDec          ::= type:t ID:i SEMICOLON {: RESULT = new AST_VAR_DEC(t,i,null,null); :}
-                    | type:t ID:i ASSIGN exp:e SEMICOLON {: RESULT = new AST_VAR_DEC(t,i,e,null); :}
-                    | type:t ID:i ASSIGN newExp:n SEMICOLON {: RESULT = new AST_VAR_DEC(t,i,null,n); :}
+varDec          ::= type:t ID:i SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,null,null); :}
+                    | type:t ID:i ASSIGN exp:e SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,e,null); :}
+                    | type:t ID:i ASSIGN newExp:n SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,null,n); :}
                     ;
 
-funcDec         ::= type:t ID:i LPAREN RPAREN LBRACE stmtList:sl RBRACE {: RESULT = new AST_FUNC_DEC(t,i,null,sl); :}
-                    | type:t ID:i LPAREN arguments:a RPAREN LBRACE stmtList:sl RBRACE{: RESULT = new AST_FUNC_DEC(t,i,a,sl); :}
+funcDec         ::= type:t ID:i LPAREN RPAREN LBRACE stmtList:sl RBRACE {: RESULT = new AST_FUNC_DEC(i,t,null,sl); :}
+                    | type:t ID:i LPAREN arguments:a RPAREN LBRACE stmtList:sl RBRACE{: RESULT = new AST_FUNC_DEC(i,t,a,sl); :}
                     ;
 
 classDec        ::= CLASS ID:ci LBRACK cFieldList:cfl RBRACK {: RESULT = new AST_CLASS_DEC(ci,null,cfl);       :}
-                    | CLASS ID:i EXTENDS ID:ei LBRACK cFieldList:cfl RBRACK {: RESULT = new AST_CLASS_DEC(ci,ei,cfl);       :}
+                    | CLASS ID:ci EXTENDS ID:ei LBRACK cFieldList:cfl RBRACK {: RESULT = new AST_CLASS_DEC(ci,ei,cfl);       :}
                     ;
 
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
@@ -208,7 +216,7 @@ exp			::=		var:v								            {: RESULT = new AST_EXP_VAR(v);          :}
                     | exp:e1 LT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 4);:}
                     | exp:e1 GT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 5);:}
                     | exp:e1 EQ exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
-                    | LPAREN exp:e RPAREN                           {: RESULT = new AST_EXP(e); :}
+                    | LPAREN exp:e RPAREN                           {: RESULT = new AST_EXP_PAREN(e); :}
                     | var:v DOT ID:i LPAREN expressions:es RPAREN   {: RESULT = new AST_EXP_TEMPLATE(v,i,es); :}
                     | ID:i LPAREN RPAREN                            {: RESULT = new AST_EXP_TEMPLATE(null,i,null); :}
                     | var:v DOT ID:i LPAREN RPAREN                  {: RESULT = new AST_EXP_TEMPLATE(v,i,null); :}
@@ -217,8 +225,8 @@ exp			::=		var:v								            {: RESULT = new AST_EXP_VAR(v);          :}
                     | STRING:s                                      {: RESULT = new AST_EXP_STRING(s); :}
 					;
 
-newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_EXP(t,null); :}
-                    | NEW type:t LBRACK exp:e RBRACK    {: RESULT = new AST_NEW_EXP(t,e); :}
+newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_EXP_SIMPLE(t); :}
+                    | NEW type:t LBRACK exp:e RBRACK    {: RESULT = new AST_NEW_EXP_SUBSCRIPT(t,e); :}
                     ;
 
 arguments ::=       arg:a                         {: RESULT = new AST_ARGUMENTS(a,null); :}
