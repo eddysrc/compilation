@@ -121,7 +121,7 @@ non terminal AST_STMT stmt;
 non terminal AST_STMT_LIST stmtList;
 non terminal AST_C_FIELD cField;
 non terminal AST_C_FIELD_LIST cFieldList;
-non terminal AST_BIN_OP binOp;
+non terminal AST_ARG arg;
 non terminal AST_ARGUMENTS arguments;
 non terminal AST_EXPRESSIONS expressions;
 /***********************/
@@ -221,9 +221,11 @@ newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_
                     | NEW type:t LBRACK exp:e RBRACK    {: RESULT = new AST_NEW_EXP(t,e); :}
                     ;
 
-arguments ::=       type:t ID:i                         {: RESULT = new AST_ARGUMENTS(t,i,null); :}
-                    | type:t ID:i COMMA arguments:a     {: RESULT = new AST_ARGUMENTS(t,i,a); :}
+arguments ::=       arg:a                         {: RESULT = new AST_ARGUMENTS(a,null); :}
+                    | arg:a COMMA arguments:as     {: RESULT = new AST_ARGUMENTS(a,as); :}
                     ;
+
+arg         ::=     type:t ID:i                         {: RESULT = new AST_ARG(t,i); :};
 
 cField      ::=     varDec:vd                           {: RESULT = new AST_C_FIELD_VAR(vd); :}
                     | funcDec:fd                        {: RESULT = new AST_C_FIELD_FUNC(fd); :}
