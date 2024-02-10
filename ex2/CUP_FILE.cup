@@ -154,6 +154,10 @@ dec			::=		varDec:v								{: RESULT = new AST_DEC(v); :}
 					| arrayTypedef:a						{: RESULT = new AST_DEC(a); :}
 					;
 
+expressions ::=     exp:e                               {: RESULT = new AST_EXPRESSIONS(e,null); :}
+                    | exp:e COMMA expressions:es              {: RESULT = new AST_EXPRESSIONS(e,es); :}
+                    ;
+
 type		::=		TYPE_INT						{: RESULT = new AST_TYPE("TYPE_INT");      :}
 					| TYPE_STRING					{: RESULT = new AST_TYPE("TYPE_STRING");   :}
 					| TYPE_VOID						{: RESULT = new AST_TYPE("TYPE_VOID");     :}
@@ -195,22 +199,22 @@ stmt		::=		varDec:vd   {: RESULT = new AST_STMT_VAR_DEC (vd); :}
 					| var:v DOT ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(v,i,es); :}
 					;
 
-exp			::=		var:v								{: RESULT = new AST_EXP_VAR(v);          :}
-                    | LPAREN exp:e RPAREN               {: RESULT = new AST_EXP(e); :}
-					| exp:e1 PLUS  exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 0);:}
-                    | exp:e1 MINUS exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 1);:}
-                    | exp:e1 TIMES exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 2);:}
-                    | exp:e1 DIVIDE exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 3);:}
-                    | exp:e1 LT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 4);:}
-                    | exp:e1 GT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 5);:}
-                    | exp:e1 EQ exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
-                    | ID:i LPAREN RPAREN                {: RESULT = new AST_EXP_TEMPLATE(null,null,i); :}
-                    | var:v DOT ID:i LPAREN RPAREN      {: RESULT = new AST_EXP_TEMPLATE(v,null,i); :}
-                    | var:v DOT ID:i LPAREN expressions:es RPAREN {: RESULT = new AST_EXP_TEMPLATE(v,es,i); :}
-                    | INT:i {: RESULT = new AST_EXP_INT(i); :}
-                    | MINUS INT:i {: RESULT = new AST_EXP_INT(-1*i); :}
-                    | NIL {: RESULT = new AST_EXP_NIL(); :}
-                    | STRING:s {: RESULT = new AST_EXP_STRING(s); :}
+exp			::=		var:v								            {: RESULT = new AST_EXP_VAR(v);          :}
+                    | INT:i                                         {: RESULT = new AST_EXP_INT(i); :}
+					| exp:e1 PLUS  exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 0);:}
+                    | exp:e1 MINUS exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 1);:}
+                    | exp:e1 TIMES exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 2);:}
+                    | exp:e1 DIVIDE exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 3);:}
+                    | exp:e1 LT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 4);:}
+                    | exp:e1 GT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 5);:}
+                    | exp:e1 EQ exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
+                    | LPAREN exp:e RPAREN                           {: RESULT = new AST_EXP(e); :}
+                    | var:v DOT ID:i LPAREN expressions:es RPAREN   {: RESULT = new AST_EXP_TEMPLATE(v,i,es); :}
+                    | ID:i LPAREN RPAREN                            {: RESULT = new AST_EXP_TEMPLATE(null,i,null); :}
+                    | var:v DOT ID:i LPAREN RPAREN                  {: RESULT = new AST_EXP_TEMPLATE(v,i,null); :}
+                    | MINUS INT:i                                   {: RESULT = new AST_EXP_INT(-1*i); :}
+                    | NIL                                           {: RESULT = new AST_EXP_NIL(); :}
+                    | STRING:s                                      {: RESULT = new AST_EXP_STRING(s); :}
 					;
 
 newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_EXP(t,null); :}
@@ -219,10 +223,6 @@ newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_
 
 arguments ::=       type:t ID:i                         {: RESULT = new AST_ARGUMENTS(t,i,null); :}
                     | type:t ID:i COMMA arguments:a     {: RESULT = new AST_ARGUMENTS(t,i,a); :}
-                    ;
-
-expressions ::=     exp:e                               {: RESULT = new AST_EXPRESSIONS(e,null); :}
-                    | exp:e expressions:es              {: RESULT = new AST_EXPRESSIONS(e,es); :}
                     ;
 
 cField      ::=     varDec:vd                           {: RESULT = new AST_C_FIELD_VAR(vd); :}
