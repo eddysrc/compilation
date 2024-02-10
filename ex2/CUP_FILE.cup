@@ -54,6 +54,8 @@ scan with
 /*************/
 terminal IF;
 terminal EQ;
+terminal LT;
+terminal GT;
 terminal DOT;
 terminal PLUS;
 terminal MINUS;
@@ -68,10 +70,23 @@ terminal LBRACE;
 terminal RBRACE;
 terminal SEMICOLON;
 terminal ASSIGN;
+terminal ERROR;
+terminal NIL;
+terminal COMMA;
+terminal TYPE_INT;
+terminal TYPE_VOID;
+terminal TYPE_STRING;
+terminal ARRAY;
+terminal CLASS;
+terminal EXTENDS;
+terminal RETURN;
+terminal NEW;
+
 
 /*************/
 /* TERMINALS */
 /*************/
+terminal String STRING;
 terminal Integer INT;
 terminal String ID;
 
@@ -86,6 +101,8 @@ non terminal AST_STMT_LIST stmtList;
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
+precedence left DOT;
+precedence left LBRACE;
 precedence left PLUS;
 precedence left MINUS;
 precedence left TIMES;
