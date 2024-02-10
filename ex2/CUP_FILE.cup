@@ -24,7 +24,8 @@ parser code
 		System.out.print(lexer.getLine());
 		System.out.print(":");
 		System.out.print(lexer.getCharPos());
-		System.out.print("] ");		
+		System.out.print("] ");
+		fileWriter.close();
 		System.exit(0);
 	}
 :}
@@ -187,8 +188,8 @@ funcDec         ::= type:t ID:i LPAREN RPAREN LBRACE stmtList:sl RBRACE {: RESUL
                     | type:t ID:i LPAREN arguments:a RPAREN LBRACE stmtList:sl RBRACE{: RESULT = new AST_FUNC_DEC(i,t,a,sl); :}
                     ;
 
-classDec        ::= CLASS ID:ci LBRACK cFieldList:cfl RBRACK {: RESULT = new AST_CLASS_DEC(ci,null,cfl);       :}
-                    | CLASS ID:ci EXTENDS ID:ei LBRACK cFieldList:cfl RBRACK {: RESULT = new AST_CLASS_DEC(ci,ei,cfl);       :}
+classDec        ::= CLASS ID:ci LBRACE cFieldList:cfl RBRACE {: RESULT = new AST_CLASS_DEC(ci,null,cfl);       :}
+                    | CLASS ID:ci EXTENDS ID:ei LBRACE cFieldList:cfl RBRACE {: RESULT = new AST_CLASS_DEC(ci,ei,cfl);       :}
                     ;
 
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
@@ -201,7 +202,7 @@ stmt		::=		varDec:vd   {: RESULT = new AST_STMT_VAR_DEC (vd); :}
                     | var:v ASSIGN newExp:ne SEMICOLON								{: RESULT = new AST_STMT_ASSIGN_NEW(v,ne); :}
                     | RETURN SEMICOLON{: RESULT = new AST_STMT_RETURN_EXP(null); :}
                     | RETURN exp:e SEMICOLON {: RESULT = new AST_STMT_RETURN_EXP(e); :}
-					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(   cond,body); :}
+					| IF LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(   cond,body); :}
 					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond,body); :}
 					| ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(null,i,es); :}
 					| var:v DOT ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(v,i,es); :}
@@ -218,6 +219,7 @@ exp			::=		var:v								            {: RESULT = new AST_EXP_VAR(v);          :}
                     | exp:e1 EQ exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
                     | LPAREN exp:e RPAREN                           {: RESULT = new AST_EXP_PAREN(e); :}
                     | var:v DOT ID:i LPAREN expressions:es RPAREN   {: RESULT = new AST_EXP_TEMPLATE(v,i,es); :}
+                    | ID:i LPAREN expressions:es RPAREN			    {: RESULT = new AST_EXP_TEMPLATE(null,i,es);:}
                     | ID:i LPAREN RPAREN                            {: RESULT = new AST_EXP_TEMPLATE(null,i,null); :}
                     | var:v DOT ID:i LPAREN RPAREN                  {: RESULT = new AST_EXP_TEMPLATE(v,i,null); :}
                     | MINUS INT:i                                   {: RESULT = new AST_EXP_INT(-1*i); :}
