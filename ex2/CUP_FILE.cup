@@ -3,18 +3,22 @@
 /*************/
 import java_cup.runtime.*;
 import AST.*;
+import java.io.PrintWriter;
 
 parser code 
 {:
+    private static final String ERROR_MESSAGE = "ERROR";
 	public Lexer lexer;
-
-	public Parser(Lexer lexer)
+	public PrintWriter fileWriter;
+	public Parser(Lexer lexer, PrintWriter fileWriter)
 	{
 		super(lexer);
 		this.lexer = lexer;
+		this.fileWriter = fileWriter;
 	}
 	public void report_error(String message, Object info)
 	{
+	    fileWriter.print("ERROR("+lexer.getLine()+")");
 		System.out.print("ERROR >> ");		
 		System.out.print("[");
 		System.out.print(lexer.getLine());
@@ -31,7 +35,17 @@ parser code
 scan with
 {:
 	Symbol s;
-	s = lexer.next_token();
+	try
+	    {
+	    s = lexer.next_token();
+	    }
+	catch (Exception | Error e)
+    		{
+    			fileWriter.print(ERROR_MESSAGE);
+    			fileWriter.close();
+    			e.printStackTrace();
+    			System.exit(0);
+    		}
 	//System.out.print(s.sym);
 	System.out.print("[");
 	System.out.print(lexer.getLine());
@@ -70,7 +84,6 @@ terminal LBRACE;
 terminal RBRACE;
 terminal SEMICOLON;
 terminal ASSIGN;
-terminal ERROR;
 terminal NIL;
 terminal COMMA;
 terminal TYPE_INT;

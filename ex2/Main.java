@@ -6,6 +6,7 @@ import AST.*;
 
 public class Main
 {
+	private static final String SUCCESS_MESSAGE = "OK";
 	static public void main(String argv[])
 	{
 		Lexer l;
@@ -37,7 +38,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l,file_writer);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -52,6 +53,7 @@ public class Main
 			/*************************/
 			/* [7] Close output file */
 			/*************************/
+			file_writer.print(SUCCESS_MESSAGE);
 			file_writer.close();
 			
 			/*************************************/
