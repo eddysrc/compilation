@@ -93,46 +93,129 @@ terminal String ID;
 /*****************/
 /* NON TERMINALS */
 /*****************/
+non terminal AST_PROGRAM Program;
+non terminal AST_DEC dec;
+non terminal AST_DEC_LIST decList;
+non terminal AST_TYPE type;
+non terminal AST_ARRAY_TYPE_DEF arrayTypedef;
+non terminal AST_VAR_DEC varDec;
+non terminal AST_FUNC_DEC funcDec;
+non terminal AST_CLASS_DEC classDec;
 non terminal AST_EXP exp;
+non terminal AST_NEW_EXP newExp;
 non terminal AST_VAR var;
 non terminal AST_STMT stmt;
 non terminal AST_STMT_LIST stmtList;
-
+non terminal AST_C_FIELD cField;
+non terminal AST_C_FIELD_LIST cFieldList;
+non terminal AST_BIN_OP binOp;
+non terminal AST_ARGUMENTS arguments;
+non terminal AST_EXPRESSIONS expressions;
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
+precedence left ASSIGN;
+precedence left EQ;
+precedence left LT, GT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left LBRACK;
+precedence left LPAREN;
 precedence left DOT;
-precedence left LBRACE;
-precedence left PLUS;
-precedence left MINUS;
-precedence left TIMES;
-precedence left DIVIDE;
 
 /************************/
-/* START WITH: stmtList */
+/* START WITH: Program */
 /************************/
-start with stmtList;
+start with Program;
 
 /********************/
 /* DERIVATION RULES */
 /********************/
+Program     ::=     dec:d   decList:l                {: RESULT = new AST_DEC_LIST(d,l);            :}
+                    | dec:d                         {: RESULT = new AST_DEC_LIST(d,null);          :}
+                    ;
+
+dec			::=		varDec:v								{: RESULT = new AST_DEC(v); :}
+					| funcDec:f								{: RESULT = new AST_DEC(f); :}
+					| classDec:c							{: RESULT = new AST_DEC(c); :}
+					| arrayTypedef:a						{: RESULT = new AST_DEC(a); :}
+					;
+
+type		::=		TYPE_INT						{: RESULT = new AST_TYPE("TYPE_INT");      :}
+					| TYPE_STRING					{: RESULT = new AST_TYPE("TYPE_STRING");   :}
+					| TYPE_VOID						{: RESULT = new AST_TYPE("TYPE_VOID");     :}
+					| ID:t							{: RESULT = new AST_TYPE(t);               :}
+					;
 
 stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
 					| stmt:s				{: RESULT = new AST_STMT_LIST(s,null); :}
 					;
+
+arrayTypedef    ::= ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON {: RESULT = new AST_ARRAY_TYPE_DEF(i,t); :};
+
+varDec          ::= type:t ID:i SEMICOLON {: RESULT = new AST_VAR_DEC(t,i,null,null); :}
+                    | type:t ID:i ASSIGN exp:e SEMICOLON {: RESULT = new AST_VAR_DEC(t,i,e,null); :}
+                    | type:t ID:i ASSIGN newExp:n SEMICOLON {: RESULT = new AST_VAR_DEC(t,i,null,n); :}
+                    ;
+
+funcDec         ::= type:t ID:i LPAREN RPAREN LBRACE stmtList:sl RBRACE {: RESULT = new AST_FUNC_DEC(t,i,null,sl); :}
+                    | type:t ID:i LPAREN arguments:a RPAREN LBRACE stmtList:sl RBRACE{: RESULT = new AST_FUNC_DEC(t,i,a,sl); :}
+                    ;
+
+classDec        ::= CLASS ID:ci LBRACK cFieldList:cfl RBRACK {: RESULT = new AST_CLASS_DEC(ci,null,cfl);       :}
+                    | CLASS ID:i EXTENDS ID:ei LBRACK cFieldList:cfl RBRACK {: RESULT = new AST_CLASS_DEC(ci,ei,cfl);       :}
+                    ;
 
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
 					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName); :} 
 					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e);     :} 
 					;
 					
-stmt		::=		var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v,e); :}
+stmt		::=		varDec:vd   {: RESULT = new AST_STMT_VAR_DEC (vd); :}
+                    | var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v,e); :}
+                    | var:v ASSIGN newExp:ne SEMICOLON								{: RESULT = new AST_STMT_ASSIGN_NEW(v,ne); :}
+                    | RETURN SEMICOLON{: RESULT = new AST_STMT_RETURN_EXP(null); :}
+                    | RETURN exp:e SEMICOLON {: RESULT = new AST_STMT_RETURN_EXP(e); :}
 					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(   cond,body); :}
 					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond,body); :}
+					| ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(null,i,es); :}
+					| var:v DOT ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(v,i,es); :}
 					;
 
-exp			::=		INT:i								{: RESULT = new AST_EXP_INT(i);          :}
-					| var:v								{: RESULT = new AST_EXP_VAR(v);          :}
+exp			::=		var:v								{: RESULT = new AST_EXP_VAR(v);          :}
+                    | LPAREN exp:e RPAREN               {: RESULT = new AST_EXP(e); :}
 					| exp:e1 PLUS  exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 0);:}
-					| exp:e1 MINUS exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 1);:}
+                    | exp:e1 MINUS exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 1);:}
+                    | exp:e1 TIMES exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 2);:}
+                    | exp:e1 DIVIDE exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 3);:}
+                    | exp:e1 LT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 4);:}
+                    | exp:e1 GT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 5);:}
+                    | exp:e1 EQ exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
+                    | ID:i LPAREN RPAREN                {: RESULT = new AST_EXP_TEMPLATE(null,null,i); :}
+                    | var:v DOT ID:i LPAREN RPAREN      {: RESULT = new AST_EXP_TEMPLATE(v,null,i); :}
+                    | var:v DOT ID:i LPAREN expressions:es RPAREN {: RESULT = new AST_EXP_TEMPLATE(v,es,i); :}
+                    | INT:i {: RESULT = new AST_EXP_INT(i); :}
+                    | MINUS INT:i {: RESULT = new AST_EXP_INT(-1*i); :}
+                    | NIL {: RESULT = new AST_EXP_NIL(); :}
+                    | STRING:s {: RESULT = new AST_EXP_STRING(s); :}
 					;
+
+newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_EXP(t,null); :}
+                    | NEW type:t LBRACK exp:e RBRACK    {: RESULT = new AST_NEW_EXP(t,e); :}
+                    ;
+
+arguments ::=       type:t ID:i                         {: RESULT = new AST_ARGUMENTS(t,i,null); :}
+                    | type:t ID:i COMMA arguments:a     {: RESULT = new AST_ARGUMENTS(t,i,a); :}
+                    ;
+
+expressions ::=     exp:e                               {: RESULT = new AST_EXPRESSIONS(e,null); :}
+                    | exp:e expressions:es              {: RESULT = new AST_EXPRESSIONS(e,es); :}
+                    ;
+
+cField      ::=     varDec:vd                           {: RESULT = new AST_C_FIELD_VAR(vd); :}
+                    | funcDec:fd                        {: RESULT = new AST_C_FIELD_FUNC(fd); :}
+                    ;
+
+cFieldList  ::=     cField:cf                           {: RESULT = new AST_C_FIELD_LIST(cf,null); :}
+                    | cField:cf cFieldList:cfl          {: RESULT = new AST_C_FIELD_LIST(cf,cfl); :}
+                    ;
