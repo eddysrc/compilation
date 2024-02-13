@@ -48,7 +48,7 @@ public class Main
 			/*************************/
 			/* [6] Print the AST ... */
 			/*************************/
-			AST.PrintMe();
+			//AST.PrintMe();
 			
 			/*************************/
 			/* [7] Close output file */
@@ -64,7 +64,7 @@ public class Main
 			     
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 }

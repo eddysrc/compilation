@@ -19,12 +19,12 @@ parser code
 	public void report_error(String message, Object info)
 	{
 	    fileWriter.print("ERROR("+lexer.getLine()+")");
-		System.out.print("ERROR >> ");		
-		System.out.print("[");
-		System.out.print(lexer.getLine());
-		System.out.print(":");
-		System.out.print(lexer.getCharPos());
-		System.out.print("] ");
+		//System.out.print("ERROR >> ");
+		//System.out.print("[");
+		//System.out.print(lexer.getLine());
+		//System.out.print(":");
+		//System.out.print(lexer.getCharPos());
+		//System.out.print("] ");
 		fileWriter.close();
 		System.exit(0);
 	}
@@ -40,26 +40,26 @@ scan with
     {
         s = lexer.next_token();
         //System.out.print(s.sym);
-        System.out.print("[");
-        System.out.print(lexer.getLine());
-        System.out.print(":");
-        System.out.print(lexer.getCharPos());
-        System.out.print("] ");
+        //System.out.print("[");
+        //System.out.print(lexer.getLine());
+        //System.out.print(":");
+        //System.out.print(lexer.getCharPos());
+        //System.out.print("] ");
         //System.out.print(TokenNames.terminalNames[s.sym]);
         if (s.value != null)
         {
-            System.out.print("( ");
-            System.out.print(s.value);
-            System.out.print(" )");
+            //System.out.print("( ");
+            //System.out.print(s.value);
+            //System.out.print(" )");
         }
-        System.out.print("\n");
+        //System.out.print("\n");
         return s;
     }
 	catch (Exception | Error e)
     {
         fileWriter.print(ERROR_MESSAGE);
         fileWriter.close();
-        e.printStackTrace();
+        //e.printStackTrace();
         System.exit(0);
     }
     finally
