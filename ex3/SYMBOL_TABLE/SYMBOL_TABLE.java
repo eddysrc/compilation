@@ -268,7 +268,20 @@ public class SYMBOL_TABLE
 					new TYPE_LIST(
 						TYPE_INT.getInstance(),
 						null)));
-			
+
+			/***************************************/
+			/* [4] Enter library function PrintString */
+			/***************************************/
+			instance.enter(
+				"PrintString",
+				new TYPE_FUNCTION(
+					TYPE_VOID.getInstance(),
+					"PrintString",
+					new TYPE_LIST(
+						TYPE_STRING.getInstance(),
+						null)));
+
+
 		}
 		return instance;
 	}

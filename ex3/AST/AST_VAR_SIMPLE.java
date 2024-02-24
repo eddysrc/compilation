@@ -1,5 +1,5 @@
 package AST;
-
+import SYMBOL_TABLE.*;
 public class AST_VAR_SIMPLE extends AST_VAR
 {
 	/************************/
@@ -45,4 +45,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			SerialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
 	}
+	public TYPE SemantMe() {
+		SYMBOL_TABLE.getInstance().find(name);
+	}
+
 }
