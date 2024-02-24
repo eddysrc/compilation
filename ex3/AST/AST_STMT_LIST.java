@@ -6,12 +6,12 @@ public class AST_STMT_LIST extends AST_Node
 	/* DATA MEMBERS */
 	/****************/
 	public AST_STMT head;
-	public AST_STMT_LIST tail;
+	public AST_STMT_LIST next;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_STMT_LIST(AST_STMT head,AST_STMT_LIST tail)
+	public AST_STMT_LIST(AST_STMT head,AST_STMT_LIST next)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -21,14 +21,14 @@ public class AST_STMT_LIST extends AST_Node
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		if (tail != null) System.out.print("====================== stmts -> stmt stmts\n");
-		if (tail == null) System.out.print("====================== stmts -> stmt      \n");
+		if (next != null) System.out.print("====================== stmts -> stmt stmts\n");
+		if (next == null) System.out.print("====================== stmts -> stmt      \n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.head = head;
-		this.tail = tail;
+		this.next = next;
 	}
 
 	/******************************************************/
@@ -42,10 +42,10 @@ public class AST_STMT_LIST extends AST_Node
 		System.out.print("AST NODE STMT LIST\n");
 
 		/*************************************/
-		/* RECURSIVELY PRINT HEAD + TAIL ... */
+		/* RECURSIVELY PRINT HEAD + next ... */
 		/*************************************/
 		if (head != null) head.PrintMe();
-		if (tail != null) tail.PrintMe();
+		if (next != null) next.PrintMe();
 
 		/**********************************/
 		/* PRINT to AST GRAPHVIZ DOT file */
@@ -58,7 +58,7 @@ public class AST_STMT_LIST extends AST_Node
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
-		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
+		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,next.SerialNumber);
 	}
 	
 }

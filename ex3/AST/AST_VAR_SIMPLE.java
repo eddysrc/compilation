@@ -1,5 +1,10 @@
 package AST;
 import SYMBOL_TABLE.*;
+import TYPES.TYPE;
+import TYPES.TYPE_CLASS;
+
+import java.io.PrintWriter;
+
 public class AST_VAR_SIMPLE extends AST_VAR
 {
 	/************************/
@@ -10,7 +15,7 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_SIMPLE(String name)
+	public AST_VAR_SIMPLE(String name, PrintWriter fileWriter, int lineNumber)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -23,9 +28,11 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		System.out.format("====================== var -> ID( %s )\n",name);
 
 		/*******************************/
-		/* COPY INPUT DATA NENBERS ... */
+		/* COPY INPUT DATA MEMBERS ... */
 		/*******************************/
 		this.name = name;
+		this.fileWriter = fileWriter;
+		this.lineNumber = lineNumber;
 	}
 
 	/**************************************************/
@@ -45,8 +52,38 @@ public class AST_VAR_SIMPLE extends AST_VAR
 			SerialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
 	}
-	public TYPE SemantMe() {
-		SYMBOL_TABLE.getInstance().find(name);
-	}
+	public TYPE SemantMe()
+	{
+		SYMBOL_TABLE symbolTable = SYMBOL_TABLE.getInstance();
+		TYPE type = symbolTable.findInClassScope(name);
 
+		if (type != null)
+		{
+			return type;
+		}
+
+		String className = symbolTable.getClassScopeName();
+
+		if (className != null)
+		{
+			TYPE_CLASS scopeClass = (TYPE_CLASS) symbolTable.find(className);
+			type = scopeClass.findFieldInClass(name);
+		}
+
+		if (type == null)
+		{
+			type = symbolTable.find(name);
+		}
+
+		if (type == null)
+		{
+			System.out.format(">> ERROR %s doesn't exist\n", name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
+			System.exit(0);
+		}
+
+		return type;
+	}
 }

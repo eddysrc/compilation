@@ -6,12 +6,12 @@ public class AST_ARGUMENTS extends AST_Node
 	/* DATA MEMBERS */
 	/****************/
 	public AST_ARG head;
-	public AST_ARGUMENTS tail;
+	public AST_ARGUMENTS next;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_ARGUMENTS(AST_ARG head, AST_ARGUMENTS tail)
+	public AST_ARGUMENTS(AST_ARG head, AST_ARGUMENTS next)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -21,14 +21,14 @@ public class AST_ARGUMENTS extends AST_Node
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		if (tail != null) System.out.print("====================== args -> arg args\n");
-		if (tail == null) System.out.print("====================== args -> arg \n");
+		if (next != null) System.out.print("====================== args -> arg args\n");
+		if (next == null) System.out.print("====================== args -> arg \n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.head = head;
-		this.tail = tail;
+		this.next = next;
 	}
 
 	/******************************************************/
@@ -42,10 +42,10 @@ public class AST_ARGUMENTS extends AST_Node
 		System.out.print("AST NODE ARGS LIST\n");
 
 		/*************************************/
-		/* RECURSIVELY PRINT HEAD + TAIL ... */
+		/* RECURSIVELY PRINT HEAD + next ... */
 		/*************************************/
 		if (head != null) head.PrintMe();
-		if (tail != null) tail.PrintMe();
+		if (next != null) next.PrintMe();
 
 		/**********************************/
 		/* PRINT to AST GRAPHVIZ DOT file */
@@ -58,7 +58,7 @@ public class AST_ARGUMENTS extends AST_Node
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
-		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
+		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,next.SerialNumber);
 	}
 	
 }

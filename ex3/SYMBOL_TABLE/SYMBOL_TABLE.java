@@ -7,6 +7,7 @@ package SYMBOL_TABLE;
 /* GENERAL IMPORTS */
 /*******************/
 import java.io.PrintWriter;
+import java.util.Objects;
 
 /*******************/
 /* PROJECT IMPORTS */
@@ -19,7 +20,9 @@ import TYPES.*;
 public class SYMBOL_TABLE
 {
 	private int hashArraySize = 13;
-	
+	private final String NONE = "NONE";
+	private final String SCOPE_BOUNDARY = "SCOPE-BOUNDARY";
+
 	/**********************************************/
 	/* The actual symbol table data structure ... */
 	/**********************************************/
@@ -98,10 +101,80 @@ public class SYMBOL_TABLE
 		return null;
 	}
 
+	/***********************************************/
+	/* Find in current scope element with name */
+	/***********************************************/
+	public TYPE findInCurrentScope(String name)
+	{
+		SYMBOL_TABLE_ENTRY symbolTableEntry = top;
+
+		if (symbolTableEntry != null)
+		{
+			while(!symbolTableEntry.name.equals(SCOPE_BOUNDARY))
+			{
+				if (name.equals(symbolTableEntry.name))
+				{
+					return symbolTableEntry.type;
+				}
+
+				symbolTableEntry = symbolTableEntry.prevtop;
+
+				if (symbolTableEntry == null)
+				{
+					break;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/***********************************************/
+	/* Find in class scope element with name */
+	/***********************************************/
+	public TYPE findInClassScope(String name)
+	{
+		SYMBOL_TABLE_ENTRY symbolTableEntry = top;
+		TYPE_FOR_SCOPE_BOUNDARIES scopeBoundary = null;
+
+		while (symbolTableEntry != null)
+		{
+			while (!symbolTableEntry.name.equals(SCOPE_BOUNDARY))
+			{
+				if (name.equals(symbolTableEntry.name))
+				{
+					return symbolTableEntry.type;
+				}
+
+				symbolTableEntry = symbolTableEntry.prevtop;
+
+				if (symbolTableEntry == null)
+				{
+					break;
+				}
+			}
+
+			if (symbolTableEntry != null) {
+				scopeBoundary = (TYPE_FOR_SCOPE_BOUNDARIES) symbolTableEntry.type;
+
+				if (!scopeBoundary.name.equals(NONE))
+				{
+					return null;
+				}
+
+				symbolTableEntry = symbolTableEntry.prevtop;
+			}
+		}
+
+		return null;
+	}
+
 	/***************************************************************************/
 	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
+	/* when entering class scope the scopeName is the class name               */
+	/* when entering other scopes the scopeName is "NONE"                      */
 	/***************************************************************************/
-	public void beginScope()
+	public void beginScope(String scopeName)
 	{
 		/************************************************************************/
 		/* Though <SCOPE-BOUNDARY> entries are present inside the symbol table, */
@@ -110,8 +183,8 @@ public class SYMBOL_TABLE
 		/* class only contain their type name which is the bottom sign: _|_     */
 		/************************************************************************/
 		enter(
-			"SCOPE-BOUNDARY",
-			new TYPE_FOR_SCOPE_BOUNDARIES("NONE"));
+				SCOPE_BOUNDARY,
+			new TYPE_FOR_SCOPE_BOUNDARIES(scopeName));
 
 		/*********************************************/
 		/* Print the symbol table after every change */
@@ -128,7 +201,7 @@ public class SYMBOL_TABLE
 		/**************************************************************************/
 		/* Pop elements from the symbol table stack until a SCOPE-BOUNDARY is hit */		
 		/**************************************************************************/
-		while (top.name != "SCOPE-BOUNDARY")
+		while (top.name != SCOPE_BOUNDARY)
 		{
 			table[top.index] = top.next;
 			top_index = top_index-1;
@@ -284,5 +357,80 @@ public class SYMBOL_TABLE
 
 		}
 		return instance;
+	}
+
+	public String getClassScopeName()
+	{
+		SYMBOL_TABLE_ENTRY symbolTableEntry = top;
+		TYPE_FOR_SCOPE_BOUNDARIES scopeBoundary = null;
+
+		while (symbolTableEntry != null)
+		{
+			while (!symbolTableEntry.name.equals(SCOPE_BOUNDARY))
+			{
+				symbolTableEntry = symbolTableEntry.prevtop;
+
+				if (symbolTableEntry == null)
+				{
+					break;
+				}
+			}
+
+			if (symbolTableEntry != null) {
+				scopeBoundary = (TYPE_FOR_SCOPE_BOUNDARIES) symbolTableEntry.type;
+
+				if (!scopeBoundary.name.equals(NONE))
+				{
+					return scopeBoundary.name;
+				}
+
+				symbolTableEntry = symbolTableEntry.prevtop;
+			}
+		}
+
+		return null;
+	}
+
+	public boolean isClassScope()
+	{
+		SYMBOL_TABLE_ENTRY symbolTableEntry = top;
+		TYPE_FOR_SCOPE_BOUNDARIES scopeBoundary = null;
+
+		while (symbolTableEntry != null)
+		{
+			while (!symbolTableEntry.name.equals(SCOPE_BOUNDARY))
+			{
+				symbolTableEntry = symbolTableEntry.prevtop;
+
+				if (symbolTableEntry == null)
+				{
+					break;
+				}
+			}
+
+			if (symbolTableEntry != null) {
+				scopeBoundary = (TYPE_FOR_SCOPE_BOUNDARIES) symbolTableEntry.type;
+
+				return !scopeBoundary.name.equals(NONE);
+			}
+		}
+
+		return false;
+	}
+
+	public boolean isInGlobalScope()
+	{
+		SYMBOL_TABLE_ENTRY symbolTableEntry;
+
+		for (symbolTableEntry = top; symbolTableEntry != null; symbolTableEntry = symbolTableEntry.prevtop)
+		{
+			if (symbolTableEntry.name.equals(SCOPE_BOUNDARY))
+			{
+				return false;
+			}
+
+		}
+
+		return true;
 	}
 }
