@@ -1,4 +1,7 @@
 package AST;
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_NEW_EXP_SUBSCRIPT extends AST_NEW_EXP 
 {
@@ -7,11 +10,10 @@ public class AST_NEW_EXP_SUBSCRIPT extends AST_NEW_EXP
 	/***************/
 	public AST_TYPE type;
 	public AST_EXP exp;
-
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_NEW_EXP_SUBSCRIPT(AST_TYPE type, AST_EXP exp)
+	public AST_NEW_EXP_SUBSCRIPT(AST_TYPE type, AST_EXP exp, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -28,6 +30,8 @@ public class AST_NEW_EXP_SUBSCRIPT extends AST_NEW_EXP
 		/*******************************/
 		this.type = type;
 		this.exp = exp;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -52,5 +56,43 @@ public class AST_NEW_EXP_SUBSCRIPT extends AST_NEW_EXP
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+
+		TYPE type = SYMBOL_TABLE.getInstance().find(this.type.type);
+
+		if (type == null)
+		{
+			System.out.format(">> ERROR non existing type %s\n",this.type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
+			System.exit(0);
+		}
+
+		if (exp.SemantMe() != TYPE_INT.getInstance())
+		{
+			System.out.format(">> ERROR array declared with non integral size\n");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
+			System.exit(0);
+		}
+
+		if ((exp instanceof AST_EXP_INT))
+		{
+			AST_EXP_INT intexp = (AST_EXP_INT)exp;
+
+			if(intexp.value<=0)
+			{
+				System.out.format(">> ERROR array declared with <=0 size\n");
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
+				System.exit(0);
+			}
+		}
+
+		return new TYPE_ARRAY(null, type);
 	}
 }

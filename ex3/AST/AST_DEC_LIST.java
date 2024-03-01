@@ -60,5 +60,23 @@ public class AST_DEC_LIST extends AST_Node
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
 		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,next.SerialNumber);
 	}
-	
+
+	public TYPE_LIST SemantMe()
+	{
+		TYPE type1 = null;
+		TYPE_LIST type2 = null;
+
+		if (head!=null)
+		{
+			type1 = head.SemantMe();
+		}
+
+		if (next!=null)
+		{
+			type2 = next.SemantMe();
+		}
+
+		return new TYPE_LIST(type1, type2);
+	}
+
 }

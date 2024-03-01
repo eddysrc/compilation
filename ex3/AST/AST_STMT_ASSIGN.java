@@ -1,4 +1,6 @@
 package AST;
+import TYPES.*;
+import java.io.PrintWriter;
 
 public class AST_STMT_ASSIGN extends AST_STMT
 {
@@ -11,7 +13,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_ASSIGN(AST_VAR var,AST_EXP exp)
+	public AST_STMT_ASSIGN(AST_VAR var,AST_EXP exp, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -28,6 +30,8 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/*******************************/
 		this.var = var;
 		this.exp = exp;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -58,5 +62,58 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+	}
+
+	public TYPE SemantMe()
+	{
+		TYPE type1 = null;
+		TYPE type2 = null;
+		TYPE_CLASS typeClass1 = null;
+		TYPE_CLASS typeClass2 = null;
+
+		if (var != null)
+		{
+			type1 = var.SemantMe();
+		}
+		if (exp != null)
+		{
+			type2 = exp.SemantMe();
+		}
+
+		if((type1.isClass() || type1.isArray()) && type2 == TYPE_NIL.getInstance())
+		{
+			return null;
+		}
+
+		if(type1.isClass() && type2.isClass())
+		{
+			typeClass1 = (TYPE_CLASS)type1;
+			typeClass2 = (TYPE_CLASS)type2;
+
+			if(typeClass1.name == typeClass2.name)
+			{
+				return null;
+			}
+
+			while(typeClass2.father!=null)
+			{
+				if(typeClass2.father.name == typeClass1.name)
+				{
+					return null;
+				}
+
+				typeClass2 = typeClass2.father;
+			}
+		}
+
+		if (type1 != type2)
+		{
+			System.out.format(">> ERROR type mismatch for var := exp\n");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+
+		return null;
 	}
 }

@@ -1,4 +1,5 @@
 package AST;
+import TYPES.*;
 
 public class AST_STMT_LIST extends AST_Node
 {
@@ -60,5 +61,21 @@ public class AST_STMT_LIST extends AST_Node
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
 		if (next != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,next.SerialNumber);
 	}
-	
+	public TYPE_LIST SemantMe()
+	{
+		TYPE type = null;
+		TYPE_LIST typeList = null;
+
+		if(head!=null)
+		{
+			type = head.SemantMe();
+		}
+
+		if(next!=null)
+		{
+			typeList = next.SemantMe();
+		}
+
+		return new TYPE_LIST(type, typeList);
+	}
 }

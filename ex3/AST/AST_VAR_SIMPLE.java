@@ -11,7 +11,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	/* simple variable name */
 	/************************/
 	public String name;
-	
+	public int lineNumber;
+	public PrintWriter fileWriter;
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/

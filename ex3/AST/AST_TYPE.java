@@ -49,4 +49,19 @@ public class AST_TYPE extends AST_Node
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 	}
+	public TYPE SemantMe()
+	{
+		TYPE type;
+		type = SYMBOL_TABLE.getInstance().find(this.type);
+
+		if (type == null)
+		{
+			System.out.format(">> ERROR non existing type %s\n", this.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+
+		return type;
+	}
 }

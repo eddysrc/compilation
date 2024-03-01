@@ -8,7 +8,7 @@ public class AST_ARG extends AST_EXP
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_ARG(AST_TYPE type, String name)
+	public AST_ARG(AST_TYPE type, String name, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,6 +25,8 @@ public class AST_ARG extends AST_EXP
 		/*******************************/
 		this.type = type;
 		this.name = name;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 	
 	/***********************************************/
@@ -54,5 +56,23 @@ public class AST_ARG extends AST_EXP
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
 			
+	}
+
+	public TYPE SemantMe()
+	{
+		TYPE type = this.type.SemantMe();
+
+		if (type == null)
+		{
+			System.out.format(">> ERROR non existing type %s \n",this.type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+		SYMBOL_TABLE.getInstance().enter(name,type);
+		/*********************************************************/
+		/* [4] Return value is type */
+		/*********************************************************/
+		return t;
 	}
 }

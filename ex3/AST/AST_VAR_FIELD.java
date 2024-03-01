@@ -8,7 +8,7 @@ public class AST_VAR_FIELD extends AST_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_FIELD(AST_VAR var,String fieldName)
+	public AST_VAR_FIELD(AST_VAR var, String fieldName, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,6 +25,8 @@ public class AST_VAR_FIELD extends AST_VAR
 		/*******************************/
 		this.var = var;
 		this.fieldName = fieldName;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*************************************************/
@@ -55,4 +57,40 @@ public class AST_VAR_FIELD extends AST_VAR
 		/****************************************/
 		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 	}
+
+	public TYPE SemantMe()
+	{
+		TYPE varType = var.SemantMe();
+		TYPE fieldType;
+
+		if (varType == null)
+		{
+			System.out.format(">> ERROR non existing variable %s with field\n",fieldName);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+
+		if (!varType.isClass())
+		{
+			System.out.format(">> ERROR variable not typeClass and has no field %s\n",fieldName);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+
+		TYPE_CLASS varClass = (TYPE_CLASS)varType;
+		fieldType = varClass.findFieldInClass(fieldName);
+
+		if (fieldType == null)
+		{
+			System.out.format(">> ERROR %s isn't a field of class %s\n", fieldName, varClass.name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+
+		return fieldType;
+	}
+
 }

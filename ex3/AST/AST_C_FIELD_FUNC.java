@@ -50,4 +50,17 @@ public class AST_C_FIELD_FUNC extends AST_C_FIELD
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,fd.SerialNumber);
 	}
+
+	public TYPE SemantMe(TYPE_CLASS fatherClass)
+	{
+		TYPE type = null;
+
+		if (fd != null)
+		{
+			fd.SemantMe(fatherClass);
+			type = SYMBOL_TABLE.getInstance().find(fd.name);
+		}
+
+		return type;
+	}
 }

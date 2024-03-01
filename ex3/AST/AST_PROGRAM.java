@@ -53,4 +53,13 @@ public class AST_PROGRAM extends AST_Node
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,dl.SerialNumber);
 			
 	}
+	public TYPE SemantMe()
+	{
+		if(dl!=null)
+		{
+			dl.SemantMe();
+		}
+
+		return null;
+	}
 }

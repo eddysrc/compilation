@@ -40,4 +40,8 @@ public class AST_EXP_NIL extends AST_EXP
 			SerialNumber,
 			String.format("NIL"));
 	}
+	public TYPE SemantMe()
+	{
+		return TYPE_NIL.getInstance();
+	}
 }

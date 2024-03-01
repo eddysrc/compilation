@@ -5,12 +5,12 @@ public class AST_C_FIELD_VAR extends AST_C_FIELD
 	/***************/
 	/*  varDec */
 	/***************/
-	public AST_VAR_DEC vd;
+	public AST_VAR_DEC varDec;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_C_FIELD_VAR(AST_VAR_DEC vd)
+	public AST_C_FIELD_VAR(AST_VAR_DEC varDec)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,7 +25,7 @@ public class AST_C_FIELD_VAR extends AST_C_FIELD
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.vd = vd;
+		this.varDec = varDec;
 	}
 
 	/*********************************************************/
@@ -48,6 +48,19 @@ public class AST_C_FIELD_VAR extends AST_C_FIELD
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,vd.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, varDec.SerialNumber);
+	}
+
+	public TYPE SemantMe(TYPE_CLASS fatherClass)
+	{
+		TYPE type = null;
+
+		if (varDec != null)
+		{
+			varDec.SemantMe(fatherClass);
+			type = SYMBOL_TABLE.getInstance().find(varDec.name);
+		}
+
+		return new TYPE_CLASS_VAR_DEC(type, varDec.name);
 	}
 }

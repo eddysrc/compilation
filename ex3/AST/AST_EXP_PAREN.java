@@ -2,12 +2,12 @@ package AST;
 
 public class AST_EXP_PAREN extends AST_EXP
 {
-	public AST_EXP e;
+	public AST_EXP exp;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_PAREN(AST_EXP e)
+	public AST_EXP_PAREN(AST_EXP exp)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -22,7 +22,7 @@ public class AST_EXP_PAREN extends AST_EXP
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.e = e;
+		this.exp = exp;
 	}
 	
 	/*************************************************/
@@ -39,7 +39,7 @@ public class AST_EXP_PAREN extends AST_EXP
 		/**************************************/
 		/* RECURSIVELY PRINT left + right ... */
 		/**************************************/
-		if (e != null) e.PrintMe();
+		if (exp != null) exp.PrintMe();
 		
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
@@ -50,6 +50,17 @@ public class AST_EXP_PAREN extends AST_EXP
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (e != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,e.SerialNumber);
+		if (exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, exp.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+		TYPE type = null;
+
+		if (exp != null)
+		{
+			type = exp.SemantMe();
+		}
+
+		return type;
 	}
 }

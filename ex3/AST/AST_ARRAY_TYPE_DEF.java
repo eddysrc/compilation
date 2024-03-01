@@ -1,17 +1,21 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
+
 public class AST_ARRAY_TYPE_DEF extends AST_DEC_ABSTRACT
 {
 	/***************/
 	/*  array ID = type[]; */
 	/***************/
-	public AST_TYPE type;
 	public String name;
+	public AST_TYPE type;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_ARRAY_TYPE_DEF(String name, AST_TYPE type)
+	public AST_ARRAY_TYPE_DEF(String name, AST_TYPE type, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -26,9 +30,10 @@ public class AST_ARRAY_TYPE_DEF extends AST_DEC_ABSTRACT
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.type = type;
 		this.name = name;
-
+		this.type = type;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -39,7 +44,7 @@ public class AST_ARRAY_TYPE_DEF extends AST_DEC_ABSTRACT
 		/********************************************/
 		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
 		/********************************************/
-		System.out.println("AST ARRAY TYPE DEF");
+		System.out.print("AST ARRAY TYPE DEF\n");
 
 		/***********************************/
 		/* RECURSIVELY PRINT VAR + EXP ... */
@@ -55,6 +60,45 @@ public class AST_ARRAY_TYPE_DEF extends AST_DEC_ABSTRACT
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,this.type.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+		SYMBOL_TABLE symbolTable = SYMBOL_TABLE.getInstance();
+		if (!symbolTable.isInGlobalScope())
+		{
+			System.out.format(">> ERROR array %s can only be defined in global scope\n",name);
+			System.exit(0);
+		}
+
+		TYPE type;
+		type = symbolTable.find(this.type.type);
+
+		if (type == null)
+		{
+			System.out.format(">> ERROR array def with non existing type %s\n",this.type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+
+		if (!type.isClass() && !type.isArray() && this.type.type != "int" && this.type.type != "string")
+		{
+			System.out.format(">> ERROR array def with non existing type %s\n",this.type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
+
+		if (symbolTable.find(name) != null)
+		{
+			System.out.format(">> ERROR name %s already exists\n",name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+		}
+
+		symbolTable.enter(name, new TYPE_ARRAY(name, type));
+
+		return null;		
 	}
 }

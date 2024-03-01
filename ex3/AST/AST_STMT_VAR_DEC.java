@@ -1,16 +1,16 @@
 package AST;
-
+import TYPES.*;
 public class AST_STMT_VAR_DEC extends AST_STMT
 {
 	/***************/
 	/*  varDec */
 	/***************/
-	public AST_VAR_DEC vd;
+	public AST_VAR_DEC varDec;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_VAR_DEC(AST_VAR_DEC vd)
+	public AST_STMT_VAR_DEC(AST_VAR_DEC varDec)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,7 +25,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.vd = vd;
+		this.varDec = varDec;
 	}
 
 	/*********************************************************/
@@ -41,7 +41,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
 		/***********************************/
 		/* RECURSIVELY PRINT VAR + EXP ... */
 		/***********************************/
-		if (vd != null) vd.PrintMe();
+		if (varDec != null) varDec.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
@@ -53,6 +53,17 @@ public class AST_STMT_VAR_DEC extends AST_STMT
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,vd.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber, varDec.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+		TYPE type = null;
+
+		if (varDec != null)
+		{
+			type = varDec.SemantMe(null);
+		}
+
+		return type;
 	}
 }
