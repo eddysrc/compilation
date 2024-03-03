@@ -1,5 +1,5 @@
 package AST;
-
+import TYPES.*;
 public class AST_EXP_PAREN extends AST_EXP
 {
 	public AST_EXP exp;

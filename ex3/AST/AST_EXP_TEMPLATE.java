@@ -1,5 +1,7 @@
 package AST;
-
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 public class AST_EXP_TEMPLATE extends AST_EXP
 {
 	/***************/

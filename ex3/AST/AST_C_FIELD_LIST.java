@@ -1,4 +1,5 @@
 package AST;
+import TYPES.*;
 
 public class AST_C_FIELD_LIST extends AST_Node
 {

@@ -1,5 +1,6 @@
 package AST;
-
+import TYPES.*;
+import java.io.PrintWriter;
 public class AST_EXP_BINOP extends AST_EXP
 {
 	int OP;

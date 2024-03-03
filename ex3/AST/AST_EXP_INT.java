@@ -1,4 +1,5 @@
 package AST;
+import TYPES.*;
 
 public class AST_EXP_INT extends AST_EXP {
     public int value;

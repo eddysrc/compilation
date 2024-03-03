@@ -1,4 +1,6 @@
 package AST;
+import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_C_FIELD_FUNC extends AST_C_FIELD
 {

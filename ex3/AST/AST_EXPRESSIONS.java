@@ -1,5 +1,5 @@
 package AST;
-
+import TYPES.*;
 public class AST_EXPRESSIONS extends AST_Node
 {
 	/****************/

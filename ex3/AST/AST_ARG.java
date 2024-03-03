@@ -1,4 +1,7 @@
 package AST;
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_ARG extends AST_EXP
 {
@@ -70,9 +73,7 @@ public class AST_ARG extends AST_EXP
 			System.exit(0);
 		}
 		SYMBOL_TABLE.getInstance().enter(name,type);
-		/*********************************************************/
-		/* [4] Return value is type */
-		/*********************************************************/
+
 		return t;
 	}
 }

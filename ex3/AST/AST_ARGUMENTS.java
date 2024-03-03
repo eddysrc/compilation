@@ -1,4 +1,5 @@
 package AST;
+import TYPES.*;
 
 public class AST_ARGUMENTS extends AST_Node
 {
@@ -75,6 +76,7 @@ public class AST_ARGUMENTS extends AST_Node
 		{
 			type2 = next.SemantMe();
 		}
+
 		return new TYPE_LIST(type1, type2);
 	}
 

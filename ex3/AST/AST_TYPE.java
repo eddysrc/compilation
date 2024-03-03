@@ -1,5 +1,7 @@
 package AST;
-
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 public class AST_TYPE extends AST_Node
 {
 	/***************/
@@ -10,7 +12,7 @@ public class AST_TYPE extends AST_Node
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_TYPE(String type)
+	public AST_TYPE(String type,int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -26,6 +28,8 @@ public class AST_TYPE extends AST_Node
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.type = type;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/

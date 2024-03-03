@@ -1,5 +1,5 @@
 package AST;
-
+import TYPES.*;
 public class AST_EXP_STRING extends AST_EXP
 {
 	public String value;
