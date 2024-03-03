@@ -167,75 +167,76 @@ expressions ::=     exp:e                               {: RESULT = new AST_EXPR
                     | exp:e COMMA expressions:es              {: RESULT = new AST_EXPRESSIONS(e,es); :}
                     ;
 
-type		::=		TYPE_INT						{: RESULT = new AST_TYPE("TYPE_INT");      :}
-					| TYPE_STRING					{: RESULT = new AST_TYPE("TYPE_STRING");   :}
-					| TYPE_VOID						{: RESULT = new AST_TYPE("TYPE_VOID");     :}
-					| ID:t							{: RESULT = new AST_TYPE(t);               :}
+type		::=		TYPE_INT:t						{: RESULT = new AST_TYPE("int",tleft+1, fileWriter);      :}
+					| TYPE_STRING:t				{: RESULT = new AST_TYPE("string",tleft+1, fileWriter);   :}
+					| TYPE_VOID:t						{: RESULT = new AST_TYPE("void",tleft+1, fileWriter);     :}
+					| ID:t							{: RESULT = new AST_TYPE(t,tleft+1, fileWriter);               :}
 					;
 
 stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
 					| stmt:s				{: RESULT = new AST_STMT_LIST(s,null); :}
 					;
 
-arrayTypedef    ::= ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON {: RESULT = new AST_ARRAY_TYPE_DEF(i,t); :};
+arrayTypedef    ::= ARRAY ID:i EQ type:t LBRACK RBRACK SEMICOLON {: RESULT = new AST_ARRAY_TYPE_DEF(i,t, tleft+1, fileWriter); :};
 
-varDec          ::= type:t ID:i SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,null,null); :}
-                    | type:t ID:i ASSIGN exp:e SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,e,null); :}
-                    | type:t ID:i ASSIGN newExp:n SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,null,n); :}
+varDec          ::= type:t ID:i SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,null,null,tleft+1,fileWriter); :}
+                    | type:t ID:i ASSIGN exp:e SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,e,null,tleft+1,fileWriter); :}
+                    | type:t ID:i ASSIGN newExp:n SEMICOLON {: RESULT = new AST_VAR_DEC(i,t,null,n,tleft+1,fileWriter); :}
                     ;
 
-funcDec         ::= type:t ID:i LPAREN RPAREN LBRACE stmtList:sl RBRACE {: RESULT = new AST_FUNC_DEC(i,t,null,sl); :}
-                    | type:t ID:i LPAREN arguments:a RPAREN LBRACE stmtList:sl RBRACE{: RESULT = new AST_FUNC_DEC(i,t,a,sl); :}
+funcDec         ::= type:t ID:i LPAREN RPAREN LBRACE stmtList:sl RBRACE {: RESULT = new AST_FUNC_DEC(i,t,null,sl, tleft+1, fileWriter); :}
+                    | type:t ID:i LPAREN arguments:a RPAREN LBRACE stmtList:sl RBRACE{: RESULT = new AST_FUNC_DEC(i,t,a,sl, tleft+1, fileWriter); :}
                     ;
 
-classDec        ::= CLASS ID:ci LBRACE cFieldList:cfl RBRACE {: RESULT = new AST_CLASS_DEC(ci,null,cfl);       :}
-                    | CLASS ID:ci EXTENDS ID:ei LBRACE cFieldList:cfl RBRACE {: RESULT = new AST_CLASS_DEC(ci,ei,cfl);       :}
+classDec        ::= CLASS ID:ci LBRACE cFieldList:cfl RBRACE {: RESULT = new AST_CLASS_DEC(ci,null,cfl,cileft+1,fileWriter);       :}
+                    | CLASS ID:ci EXTENDS ID:ei LBRACE cFieldList:cfl RBRACE {: RESULT = new AST_CLASS_DEC(ci,ei,cfl,cileft+1,fileWriter);       :}
                     ;
 
-var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
-					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName); :} 
-					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e);     :} 
+var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name,nameleft+1,fileWriter);       :}
+					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName,vleft+1,fileWriter); :}
+					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e,vleft+1,fileWriter);     :}
 					;
 					
 stmt		::=		varDec:vd   {: RESULT = new AST_STMT_VAR_DEC (vd); :}
-                    | var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v,e); :}
-                    | var:v ASSIGN newExp:ne SEMICOLON								{: RESULT = new AST_STMT_ASSIGN_NEW(v,ne); :}
-                    | RETURN SEMICOLON{: RESULT = new AST_STMT_RETURN_EXP(null); :}
-                    | RETURN exp:e SEMICOLON {: RESULT = new AST_STMT_RETURN_EXP(e); :}
-					| IF LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(   cond,body); :}
-					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond,body); :}
-					| ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(null,i,es); :}
-					| var:v DOT ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(v,i,es); :}
+                    | var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v,e,vleft+1, fileWriter); :}
+                    | var:v ASSIGN newExp:ne SEMICOLON								{: RESULT = new AST_STMT_ASSIGN_NEW(v,ne,vleft+1,fileWriter); :}
+                    | RETURN:r SEMICOLON{: RESULT = new AST_STMT_RETURN_EXP(null,rleft+1, fileWriter); :}
+                    | RETURN exp:e SEMICOLON {: RESULT = new AST_STMT_RETURN_EXP(e,eleft+1,fileWriter); :}
+					| IF LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(cond,body,condleft+1,fileWriter); :}
+					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond,body,condleft+1,fileWriter); :}
+					| ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(null,i,es,ileft+1,fileWriter); :}
+					| var:v DOT ID:i LPAREN expressions:es RPAREN SEMICOLON {: RESULT = new AST_STMT_EXPRESSIONS(v,i,es,ileft+1,fileWriter); :}
 					;
 
 exp			::=		var:v								            {: RESULT = new AST_EXP_VAR(v);          :}
                     | INT:i                                         {: RESULT = new AST_EXP_INT(i); :}
-					| exp:e1 PLUS  exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 0);:}
-                    | exp:e1 MINUS exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 1);:}
-                    | exp:e1 TIMES exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 2);:}
-                    | exp:e1 DIVIDE exp:e2				            {: RESULT = new AST_EXP_BINOP(e1, e2, 3);:}
-                    | exp:e1 LT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 4);:}
-                    | exp:e1 GT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 5);:}
-                    | exp:e1 EQ exp:e2					            {: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
+					| exp:e1 PLUS  exp:e2				            {: RESULT = new AST_EXP_BINOP(e1,e2,0,e1left+1,fileWriter);:}
+                    | exp:e1 MINUS exp:e2				            {: RESULT = new AST_EXP_BINOP(e1,e2,1,e1left+1,fileWriter);:}
+                    | exp:e1 TIMES exp:e2				            {: RESULT = new AST_EXP_BINOP(e1,e2,2,e1left+1,fileWriter);:}
+                    | exp:e1 DIVIDE exp:e2				            {: RESULT = new AST_EXP_BINOP(e1,e2,3,e1left+1,fileWriter);:}
+                    | exp:e1 LT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1,e2,4,e1left+1,fileWriter);:}
+                    | exp:e1 GT exp:e2					            {: RESULT = new AST_EXP_BINOP(e1,e2,5,e1left+1,fileWriter);:}
+                    | exp:e1 EQ exp:e2					            {: RESULT = new AST_EXP_BINOP(e1,e2,6,e1left+1,fileWriter);:}
                     | LPAREN exp:e RPAREN                           {: RESULT = new AST_EXP_PAREN(e); :}
-                    | var:v DOT ID:i LPAREN expressions:es RPAREN   {: RESULT = new AST_EXP_TEMPLATE(v,i,es); :}
-                    | ID:i LPAREN expressions:es RPAREN			    {: RESULT = new AST_EXP_TEMPLATE(null,i,es);:}
-                    | ID:i LPAREN RPAREN                            {: RESULT = new AST_EXP_TEMPLATE(null,i,null); :}
-                    | var:v DOT ID:i LPAREN RPAREN                  {: RESULT = new AST_EXP_TEMPLATE(v,i,null); :}
+                    | var:v DOT ID:i LPAREN expressions:es RPAREN   {: RESULT = new AST_EXP_TEMPLATE(v,i,es,vleft+1, fileWriter); :}
+                    | ID:i LPAREN expressions:es RPAREN			    {: RESULT = new AST_EXP_TEMPLATE(null,i,es,ileft+1,fileWriter);:}
+                    | ID:i LPAREN RPAREN                            {: RESULT = new AST_EXP_TEMPLATE(null,i,null,ileft+1,fileWriter); :}
+                    | var:v DOT ID:i LPAREN RPAREN                  {: RESULT = new AST_EXP_TEMPLATE(v,i,null,vleft+1, fileWriter); :}
                     | MINUS INT:i                                   {: RESULT = new AST_EXP_INT(-1*i); :}
                     | NIL                                           {: RESULT = new AST_EXP_NIL(); :}
                     | STRING:s                                      {: RESULT = new AST_EXP_STRING(s); :}
 					;
 
-newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_EXP_SIMPLE(t); :}
-                    | NEW type:t LBRACK exp:e RBRACK    {: RESULT = new AST_NEW_EXP_SUBSCRIPT(t,e); :}
+newExp      ::=     NEW type:t                          {: RESULT = new AST_NEW_EXP_SIMPLE(t,tleft+1,fileWriter); :}
+                    | NEW type:t LBRACK exp:e RBRACK    {: RESULT = new AST_NEW_EXP_SUBSCRIPT(t,e,tleft+1,fileWriter); :}
                     ;
+
 
 arguments ::=       arg:a                         {: RESULT = new AST_ARGUMENTS(a,null); :}
                     | arg:a COMMA arguments:as     {: RESULT = new AST_ARGUMENTS(a,as); :}
                     ;
 
-arg         ::=     type:t ID:i                         {: RESULT = new AST_ARG(t,i); :};
+arg         ::=     type:t ID:i                         {: RESULT = new AST_ARG(t,i, tleft, fileWriter); :};
 
 cField      ::=     varDec:vd                           {: RESULT = new AST_C_FIELD_VAR(vd); :}
                     | funcDec:fd                        {: RESULT = new AST_C_FIELD_FUNC(fd); :}
