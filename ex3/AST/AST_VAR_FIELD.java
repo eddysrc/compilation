@@ -1,4 +1,6 @@
 package AST;
+import java.io.PrintWriter;
+import TYPES.*;
 
 public class AST_VAR_FIELD extends AST_VAR
 {

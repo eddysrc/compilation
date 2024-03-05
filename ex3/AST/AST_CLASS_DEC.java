@@ -11,12 +11,12 @@ public class AST_CLASS_DEC extends AST_DEC_ABSTRACT
 	/***************/
 	public String name;
 	public String fatherName;
-	public AST_CFIELD_LIST content;
+	public AST_C_FIELD_LIST content;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_CLASS_DEC(String name, String fatherName, AST_CFIELD_LIST content, int lineNumber, PrintWriter fileWriter)
+	public AST_CLASS_DEC(String name, String fatherName, AST_C_FIELD_LIST content, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

@@ -192,7 +192,7 @@ classDec        ::= CLASS ID:ci LBRACE cFieldList:cfl RBRACE {: RESULT = new AST
                     | CLASS ID:ci EXTENDS ID:ei LBRACE cFieldList:cfl RBRACE {: RESULT = new AST_CLASS_DEC(ci,ei,cfl,cileft+1,fileWriter);       :}
                     ;
 
-var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name,nameleft+1,fileWriter);       :}
+var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name,fileWriter, nameleft+1);       :}
 					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName,vleft+1,fileWriter); :}
 					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e,vleft+1,fileWriter);     :}
 					;

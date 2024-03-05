@@ -1,5 +1,5 @@
 package AST;
-
+import TYPES.*;
 import java.io.PrintWriter;
 
 public abstract class AST_Node

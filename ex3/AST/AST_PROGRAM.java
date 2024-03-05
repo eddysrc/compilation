@@ -1,4 +1,5 @@
 package AST;
+import TYPES.*;
 
 public class AST_PROGRAM extends AST_Node
 {
