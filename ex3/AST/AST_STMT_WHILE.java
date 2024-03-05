@@ -56,7 +56,7 @@ public class AST_STMT_WHILE extends AST_STMT
 			fileWriter.close();
 		}
 
-		symbolTable.beginScope();
+		symbolTable.beginScope("NONE");
 		body.SemantMe();
 		symbolTable.endScope();
 

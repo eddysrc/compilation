@@ -74,6 +74,6 @@ public class AST_ARG extends AST_EXP
 		}
 		SYMBOL_TABLE.getInstance().enter(name,type);
 
-		return t;
+		return type;
 	}
 }

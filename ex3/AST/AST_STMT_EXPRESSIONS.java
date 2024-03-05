@@ -174,8 +174,8 @@ public class AST_STMT_EXPRESSIONS extends AST_STMT
 						}
 				}
 			}
-			argsTypes = argsTypes.tail;
-			expectedTypes = expectedTypes.tail;
+			argsTypes = argsTypes.next;
+			expectedTypes = expectedTypes.next;
 
 		}
 		if (argsTypes != null || expectedTypes != null)

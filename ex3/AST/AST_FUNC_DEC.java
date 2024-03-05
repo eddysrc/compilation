@@ -85,7 +85,7 @@ public class AST_FUNC_DEC extends AST_DEC_ABSTRACT
 			System.exit(0);
 		}
 
-		if (symbolTable.findInScope(name) != null)
+		if (symbolTable.findInCurrentScope(name) != null)
 		{
 			System.out.format(">> ERROR function %s already exists in scope\n",name);
 			fileWriter.write("ERROR(" + lineNumber + ")");
@@ -145,8 +145,8 @@ public class AST_FUNC_DEC extends AST_DEC_ABSTRACT
 						System.exit(0);
 					}
 
-					argsTypes = argsTypes.tail;
-					expectedTypes = expectedTypes.tail;
+					argsTypes = argsTypes.next;
+					expectedTypes = expectedTypes.next;
 				}
 
 				if (argsTypes != null || expectedTypes != null)

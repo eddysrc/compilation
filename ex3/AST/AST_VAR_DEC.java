@@ -79,7 +79,7 @@ public class AST_VAR_DEC extends AST_DEC_ABSTRACT
 			System.exit(0);
 		}
 
-		if (symbolTable.findInScope(name) != null)
+		if (symbolTable.findInCurrentScope(name) != null)
 		{
 			System.out.format(">> ERROR variable %s already exists in scope\n",name);	
 			fileWriter.write("ERROR(" + lineNumber + ")");

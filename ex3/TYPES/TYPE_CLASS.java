@@ -24,6 +24,8 @@ public class TYPE_CLASS extends TYPE
 		this.data_members = data_members;
 	}
 
+	public boolean isClass(){ return true;}
+
 	public TYPE findFieldInClass(String name)
 	{
 		TYPE member = null;
@@ -52,5 +54,52 @@ public class TYPE_CLASS extends TYPE
 		}
 
 		return father.findFieldInClass(name);
+	}
+
+	public TYPE findMethodInClass(String name){
+		TYPE_LIST members = data_members;
+		TYPE member = null;
+		TYPE_FUNCTION method = null;
+
+		while (members != null)
+		{
+			member = members.head;
+
+			if (member instanceof TYPE_FUNCTION)
+			{
+				method = (TYPE_FUNCTION)member;
+
+				if (method.name.equals(name))
+				{
+					return method;
+				}
+			}
+			members = members.next;
+		}
+
+		TYPE_CLASS ancestor = father;
+
+		while (ancestor!=null)
+		{
+			members = ancestor.data_members;
+
+			while (members!=null)
+			{
+				member = members.head;
+
+				if (member instanceof TYPE_FUNCTION)
+				{
+					method = (TYPE_FUNCTION)member;
+					if(method.name.equals(name)){
+						return method;
+					}
+				}
+
+				members = members.next;
+			}
+
+			ancestor = ancestor.father;
+		}
+		return null;
 	}
 }
