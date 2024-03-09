@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://jflex.de/
+HostUrl=https://objects.githubusercontent.com/github-production-release-asset-2e65be/30818918/29f30378-e3ff-4de9-9d91-e0ec63ac955a?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240123%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240123T142541Z&X-Amz-Expires=300&X-Amz-Signature=30d31d0759869bc08452093d44c6a806f37a49c18ef7891f1e8436b9c20fa412&X-Amz-SignedHeaders=host&actor_id=79972852&key_id=0&repo_id=30818918&response-content-disposition=attachment%3B%20filename%3Djflex-1.9.1.tar.gz&response-content-type=application%2Foctet-stream
